@@ -1,0 +1,4088 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --app-text-scale: 1;
+}
+
+html, body, #root {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* =========================================================
+   PENGATURAN UKURAN FONT DINAMIS MENYELURUH (MAIN CONTENT, CARDS, TABLES, FORMS)
+   Menerapkan CSS scale multipliers pada seluruh elemen teks di main content
+   ========================================================= */
+
+/* 1. COMPACT (50% / ~2x Lebih Ringkas) */
+html[data-font-size="compact"] {
+  font-size: 50% !important;
+}
+
+html[data-font-size="compact"] .desktop-content,
+html[data-font-size="compact"] .mobile-body {
+  font-size: 11px !important;
+}
+
+html[data-font-size="compact"] h1,
+html[data-font-size="compact"] .blade-main-title {
+  font-size: 16px !important;
+}
+
+html[data-font-size="compact"] h2,
+html[data-font-size="compact"] .gopay-header-greeting,
+html[data-font-size="compact"] .topbar-title h2,
+html[data-font-size="compact"] .pos-detail-name {
+  font-size: 13.5px !important;
+}
+
+html[data-font-size="compact"] h3,
+html[data-font-size="compact"] h4,
+html[data-font-size="compact"] .gopay-section-title,
+html[data-font-size="compact"] .blade-card-title,
+html[data-font-size="compact"] .panel-header h3 {
+  font-size: 11.5px !important;
+}
+
+html[data-font-size="compact"] .blade-card-value,
+html[data-font-size="compact"] .stat-value,
+html[data-font-size="compact"] .gopay-balance-amount,
+html[data-font-size="compact"] .gopay-wallet-balance-num,
+html[data-font-size="compact"] .total-count-badge {
+  font-size: 14px !important;
+}
+
+html[data-font-size="compact"] .desktop-table td,
+html[data-font-size="compact"] .desktop-table th,
+html[data-font-size="compact"] .table-custom td,
+html[data-font-size="compact"] .table-custom th,
+html[data-font-size="compact"] .form-control,
+html[data-font-size="compact"] .form-select,
+html[data-font-size="compact"] .form-label,
+html[data-font-size="compact"] .blade-card-label,
+html[data-font-size="compact"] .blade-card-footer,
+html[data-font-size="compact"] .gopay-feed-title,
+html[data-font-size="compact"] .gopay-tile-name,
+html[data-font-size="compact"] .gopay-feed-amount,
+html[data-font-size="compact"] .nav-link,
+html[data-font-size="compact"] .btn,
+html[data-font-size="compact"] button:not(.btn-close-modal),
+html[data-font-size="compact"] select,
+html[data-font-size="compact"] input,
+html[data-font-size="compact"] textarea,
+html[data-font-size="compact"] .dropdown-menu-item {
+  font-size: 10px !important;
+}
+
+html[data-font-size="compact"] .blade-sub-desc,
+html[data-font-size="compact"] .blade-card-desc,
+html[data-font-size="compact"] .blade-eyebrow,
+html[data-font-size="compact"] .gopay-feed-meta,
+html[data-font-size="compact"] .text-muted,
+html[data-font-size="compact"] .topbar-title p,
+html[data-font-size="compact"] .badge,
+html[data-font-size="compact"] .badge-tag,
+html[data-font-size="compact"] .pos-shortcut-hint,
+html[data-font-size="compact"] small {
+  font-size: 8.5px !important;
+}
+
+/* 2. MEDIUM (75% / Proporsional) */
+html[data-font-size="medium"] {
+  font-size: 75% !important;
+}
+
+html[data-font-size="medium"] .desktop-content,
+html[data-font-size="medium"] .mobile-body {
+  font-size: 13px !important;
+}
+
+html[data-font-size="medium"] h1,
+html[data-font-size="medium"] .blade-main-title {
+  font-size: 20px !important;
+}
+
+html[data-font-size="medium"] h2,
+html[data-font-size="medium"] .gopay-header-greeting,
+html[data-font-size="medium"] .topbar-title h2,
+html[data-font-size="medium"] .pos-detail-name {
+  font-size: 16px !important;
+}
+
+html[data-font-size="medium"] h3,
+html[data-font-size="medium"] h4,
+html[data-font-size="medium"] .gopay-section-title,
+html[data-font-size="medium"] .blade-card-title,
+html[data-font-size="medium"] .panel-header h3 {
+  font-size: 13.5px !important;
+}
+
+html[data-font-size="medium"] .blade-card-value,
+html[data-font-size="medium"] .stat-value,
+html[data-font-size="medium"] .gopay-balance-amount,
+html[data-font-size="medium"] .gopay-wallet-balance-num {
+  font-size: 18px !important;
+}
+
+html[data-font-size="medium"] .desktop-table td,
+html[data-font-size="medium"] .desktop-table th,
+html[data-font-size="medium"] .form-control,
+html[data-font-size="medium"] .form-label,
+html[data-font-size="medium"] .blade-card-label,
+html[data-font-size="medium"] .blade-card-footer,
+html[data-font-size="medium"] .gopay-feed-title,
+html[data-font-size="medium"] .gopay-tile-name,
+html[data-font-size="medium"] .gopay-feed-amount,
+html[data-font-size="medium"] .nav-link,
+html[data-font-size="medium"] button:not(.btn-close-modal),
+html[data-font-size="medium"] select,
+html[data-font-size="medium"] input,
+html[data-font-size="medium"] textarea {
+  font-size: 12px !important;
+}
+
+html[data-font-size="medium"] .blade-sub-desc,
+html[data-font-size="medium"] .blade-card-desc,
+html[data-font-size="medium"] .gopay-feed-meta,
+html[data-font-size="medium"] .text-muted,
+html[data-font-size="medium"] .topbar-title p,
+html[data-font-size="medium"] .badge,
+html[data-font-size="medium"] .badge-tag {
+  font-size: 10.5px !important;
+}
+
+/* 3. NORMAL (Standar 100% / Bawaan Browser) */
+html[data-font-size="normal"] {
+  font-size: 100% !important;
+}
+
+/* 4. LARGE (115% / Besar & Jelas) */
+html[data-font-size="large"] {
+  font-size: 115% !important;
+}
+
+html[data-font-size="large"] .desktop-content,
+html[data-font-size="large"] .mobile-body {
+  font-size: 16px !important;
+}
+
+html[data-font-size="large"] h1,
+html[data-font-size="large"] .blade-main-title {
+  font-size: 28px !important;
+}
+
+html[data-font-size="large"] h2,
+html[data-font-size="large"] .gopay-header-greeting,
+html[data-font-size="large"] .topbar-title h2 {
+  font-size: 21px !important;
+}
+
+html[data-font-size="large"] h3,
+html[data-font-size="large"] .blade-card-title,
+html[data-font-size="large"] .panel-header h3 {
+  font-size: 16.5px !important;
+}
+
+html[data-font-size="large"] .blade-card-value,
+html[data-font-size="large"] .stat-value,
+html[data-font-size="large"] .gopay-balance-amount,
+html[data-font-size="large"] .gopay-wallet-balance-num {
+  font-size: 26px !important;
+}
+
+html[data-font-size="large"] .desktop-table td,
+html[data-font-size="large"] .desktop-table th,
+html[data-font-size="large"] .form-control,
+html[data-font-size="large"] .form-label,
+html[data-font-size="large"] .nav-link,
+html[data-font-size="large"] button:not(.btn-close-modal),
+html[data-font-size="large"] select,
+html[data-font-size="large"] input,
+html[data-font-size="large"] textarea {
+  font-size: 15px !important;
+}
+
+/* =========================================================
+   STYLING MODAL PENGATURAN FONT
+   ========================================================= */
+.font-settings-modal {
+  max-width: 480px !important;
+}
+
+.font-settings-icon-circle {
+  width: 36px;
+  height: 36px;
+  background: #e0f2fe;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.font-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.font-option-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.font-option-card:hover {
+  background: #ffffff;
+  border-color: #38bdf8;
+  transform: translateY(-1px);
+}
+
+.font-option-card.selected {
+  background: #f0f9ff;
+  border-color: #0284c7;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
+}
+
+.font-option-radio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radio-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #cbd5e1;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.radio-dot.checked {
+  border-color: #0284c7;
+  background: #0284c7;
+}
+
+.radio-dot.checked::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.font-option-text {
+  flex: 1;
+}
+
+.font-option-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.font-active-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: #0284c7;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.font-option-desc {
+  font-size: 11.5px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.font-preview-box {
+  background: #ffffff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 14px;
+}
+
+.font-preview-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.font-preview-sample {
+  font-size: 13px;
+  color: #1e293b;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   SISTEM TEMA GELAP (DARK THEME ENGINE)
+   [data-theme="dark"]
+   ========================================================= */
+
+html[data-theme="dark"] {
+  --bg-app: #090d16;
+  --surface: #0f172a;
+  --surface-subtle: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-light: #64748b;
+  --border-color: #334155;
+  --primary-light: #082f49;
+  --primary-border: #0284c7;
+}
+
+html[data-theme="dark"] body {
+  background-color: #090d16 !important;
+  color: #f8fafc !important;
+}
+
+/* Desktop Dark Layout */
+html[data-theme="dark"] .desktop-layout {
+  background-color: #090d16 !important;
+  background-image:
+    radial-gradient(at 10% 10%, rgba(14, 165, 233, 0.25) 0px, transparent 50%),
+    radial-gradient(at 90% 15%, rgba(2, 132, 199, 0.2) 0px, transparent 55%),
+    radial-gradient(at 50% 80%, rgba(30, 41, 59, 0.7) 0px, transparent 60%),
+    linear-gradient(135deg, #090d16 0%, #0f172a 50%, #021226 100%) !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .desktop-layout::before {
+  background-image: radial-gradient(#0284c7 1.2px, transparent 1.2px) !important;
+  opacity: 0.18 !important;
+}
+
+/* Topbar & Header Dark */
+html[data-theme="dark"] .desktop-topbar {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-color: rgba(51, 65, 85, 0.7) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-theme="dark"] .topbar-title h2 {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .btn-refresh-top {
+  background: rgba(30, 41, 59, 0.85) !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] .btn-refresh-top:hover {
+  background: #1e293b !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+/* Sidebar & Navigation Dark */
+html[data-theme="dark"] .desktop-sidebar {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .brand-name {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .nav-group-title {
+  color: #64748b !important;
+}
+
+html[data-theme="dark"] .nav-link {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .nav-link:hover {
+  background: rgba(30, 41, 59, 0.75) !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .nav-link:hover svg {
+  stroke: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .pos-scope-select {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .user-profile-row {
+  background: rgba(30, 41, 59, 0.75) !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .user-info-box .user-name {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .profile-dropdown-menu {
+  background: rgba(15, 23, 42, 0.95) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.5) !important;
+}
+
+html[data-theme="dark"] .dropdown-user-name {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .dropdown-menu-item {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .dropdown-menu-item:hover {
+  background: #1e293b !important;
+  color: #38bdf8 !important;
+}
+
+/* Cards, Panels, & Tables Dark */
+html[data-theme="dark"] .desktop-panel,
+html[data-theme="dark"] .blade-card,
+html[data-theme="dark"] .blade-panel,
+html[data-theme="dark"] .blade-stats-chart-card,
+html[data-theme="dark"] .modal-card-custom,
+html[data-theme="dark"] .gopay-dropdown-menu,
+html[data-theme="dark"] .neraca-sub-card,
+html[data-theme="dark"] .blade-hero-glass-box {
+  background: rgba(15, 23, 42, 0.92) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45) !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .blade-header-row {
+  background: rgba(15, 23, 42, 0.82) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-theme="dark"] .blade-main-title,
+html[data-theme="dark"] .blade-card-value,
+html[data-theme="dark"] .chart-main-title,
+html[data-theme="dark"] .blade-panel-title,
+html[data-theme="dark"] .panel-header h3,
+html[data-theme="dark"] .stat-bar-title,
+html[data-theme="dark"] .neraca-section-title,
+html[data-theme="dark"] .neraca-kop-title,
+html[data-theme="dark"] .neraca-cell-name,
+html[data-theme="dark"] .sign-name,
+html[data-theme="dark"] .pill-value,
+html[data-theme="dark"] .blade-glass-value,
+html[data-theme="dark"] h1, html[data-theme="dark"] h2, html[data-theme="dark"] h3, html[data-theme="dark"] h4 {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .blade-eyebrow {
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .blade-sub-desc {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .blade-card-desc,
+html[data-theme="dark"] .chart-sub-desc,
+html[data-theme="dark"] .blade-panel-subtitle,
+html[data-theme="dark"] .stat-bar-subinfo,
+html[data-theme="dark"] .neraca-kop-sub,
+html[data-theme="dark"] .sign-title,
+html[data-theme="dark"] .pill-month,
+html[data-theme="dark"] .pill-sub,
+html[data-theme="dark"] .blade-glass-label,
+html[data-theme="dark"] .text-muted {
+  color: #94a3b8 !important;
+}
+
+/* Charts Dark Mode Styling */
+html[data-theme="dark"] .svg-chart-wrapper {
+  background: linear-gradient(180deg, #0b1329 0%, #0f172a 100%) !important;
+  border-color: #334155 !important;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+html[data-theme="dark"] .interactive-line-chart line {
+  stroke: rgba(51, 65, 85, 0.6) !important;
+}
+
+html[data-theme="dark"] .interactive-line-chart text {
+  fill: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .chart-badge-tag {
+  background: #082f49 !important;
+  color: #38bdf8 !important;
+  border-color: #0284c7 !important;
+}
+
+html[data-theme="dark"] .chart-metric-toggle {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .btn-metric-toggle {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .btn-metric-toggle:hover {
+  color: #f8fafc !important;
+}
+
+/* Donut & Stats Bars */
+html[data-theme="dark"] .stat-bar-row,
+html[data-theme="dark"] .growth-stat-pill {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .growth-stat-pill.up {
+  background: linear-gradient(180deg, #06283d 0%, #0f172a 100%) !important;
+  border-color: #0284c7 !important;
+}
+
+html[data-theme="dark"] .growth-stat-pill.down {
+  background: linear-gradient(180deg, #3b0d0c 0%, #0f172a 100%) !important;
+  border-color: #ef4444 !important;
+}
+
+html[data-theme="dark"] .growth-stat-pill.neutral {
+  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%) !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .stat-bar-row:hover,
+html[data-theme="dark"] .growth-stat-pill:hover {
+  background: #27354a !important;
+  border-color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .stat-progress-track {
+  background: #334155 !important;
+}
+
+html[data-theme="dark"] .stat-bar-subinfo strong {
+  color: #f8fafc !important;
+}
+
+/* Table Responsive Container & Tables */
+html[data-theme="dark"] .table-responsive-desktop {
+  border-color: #334155 !important;
+  background: #0f172a !important;
+}
+
+html[data-theme="dark"] .desktop-table th,
+html[data-theme="dark"] .portal-table th,
+html[data-theme="dark"] .neraca-table th {
+  background: #1e293b !important;
+  color: #94a3b8 !important;
+  border-bottom-color: #334155 !important;
+}
+
+html[data-theme="dark"] .desktop-table td,
+html[data-theme="dark"] .portal-table td,
+html[data-theme="dark"] .neraca-table td {
+  border-bottom-color: #1e293b !important;
+  color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] .desktop-table tr:hover td,
+html[data-theme="dark"] .portal-table tr:hover td,
+html[data-theme="dark"] .neraca-table tr:hover td {
+  background: rgba(30, 41, 59, 0.7) !important;
+}
+
+html[data-theme="dark"] .desktop-table tbody tr:nth-child(even),
+html[data-theme="dark"] .portal-table tbody tr:nth-child(even) {
+  background-color: rgba(15, 23, 42, 0.6) !important;
+}
+
+html[data-theme="dark"] .btn-edit-cell {
+  background: #082f49 !important;
+  color: #38bdf8 !important;
+  border-color: #0284c7 !important;
+}
+
+html[data-theme="dark"] .btn-delete-cell {
+  background: #450a0a !important;
+  color: #f87171 !important;
+  border-color: #dc2626 !important;
+}
+
+html[data-theme="dark"] .btn-blade-action,
+html[data-theme="dark"] .btn-secondary-action {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .btn-blade-action:hover,
+html[data-theme="dark"] .btn-secondary-action:hover {
+  background: #27354a !important;
+  border-color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .badge-metode-tag {
+  background: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+/* Filter Bars & Form Inputs */
+html[data-theme="dark"] .filter-input-wrap,
+html[data-theme="dark"] .filter-input-text,
+html[data-theme="dark"] .filter-select {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .filter-input-wrap input {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] select,
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),
+html[data-theme="dark"] textarea {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .form-control:focus,
+html[data-theme="dark"] .filter-input-wrap:focus-within {
+  background: #0f172a !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15) !important;
+}
+
+html[data-theme="dark"] .form-label,
+html[data-theme="dark"] .blade-card-label {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .mode-toggle-group {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .mode-toggle-btn {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .mode-toggle-btn.active {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .font-option-card {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .font-option-card.selected {
+  background: #082f49 !important;
+  border-color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .font-option-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .font-preview-box {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .font-preview-sample {
+  color: #f8fafc !important;
+}
+
+/* Neraca Rekonsiliasi & Dynamic Header Dark */
+html[data-theme="dark"] .reconciliation-card.balanced {
+  background: linear-gradient(135deg, #062e2e 0%, #0f172a 100%) !important;
+  border-color: #0d9488 !important;
+  color: #5eead4 !important;
+}
+
+html[data-theme="dark"] .reconciliation-card.unbalanced {
+  background: linear-gradient(135deg, #3b0d0c 0%, #0f172a 100%) !important;
+  border-color: #b91c1c !important;
+  color: #fca5a5 !important;
+}
+
+html[data-theme="dark"] .neraca-signatures-row {
+  border-top-color: #334155 !important;
+}
+
+html[data-theme="dark"] .blade-card-footer {
+  border-top-color: #334155 !important;
+}
+
+/* =========================================================
+   COMPREHENSIVE MOBILE DARK MODE (SISTEM KEUANGAN MOBILE)
+   ========================================================= */
+
+/* 1. Mobile App Shell & Body */
+html[data-theme="dark"] .mobile-app-shell {
+  background-color: #090d16 !important;
+  background-image:
+    radial-gradient(at 15% 15%, rgba(14, 165, 233, 0.20) 0px, transparent 55%),
+    radial-gradient(at 85% 85%, rgba(30, 41, 59, 0.6) 0px, transparent 55%),
+    linear-gradient(180deg, #090d16 0%, #0f172a 100%) !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .mobile-body {
+  color: #f8fafc !important;
+}
+
+/* 2. Top Header */
+html[data-theme="dark"] .gopay-header {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.6) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+html[data-theme="dark"] .gopay-header.scrolled {
+  background: rgba(15, 23, 42, 0.96) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+html[data-theme="dark"] .gopay-brand-avatar {
+  background: #0f172a !important;
+  border-color: #0284c7 !important;
+}
+
+html[data-theme="dark"] .gopay-app-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .gopay-app-subtitle {
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .gopay-user-badge {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border-color: #334155 !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .gopay-user-badge:hover,
+html[data-theme="dark"] .gopay-user-badge.active {
+  background: rgba(51, 65, 85, 0.8) !important;
+}
+
+/* 3. User Dropdown Menu */
+html[data-theme="dark"] .gopay-dropdown-menu {
+  background: rgba(15, 23, 42, 0.96) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+html[data-theme="dark"] .gopay-drop-user-name {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .gopay-drop-user-role {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .gopay-drop-divider {
+  background: #334155 !important;
+}
+
+html[data-theme="dark"] .gopay-drop-item {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .gopay-drop-item:hover {
+  background: #1e293b !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .gopay-drop-item.logout {
+  color: #f87171 !important;
+}
+
+html[data-theme="dark"] .gopay-drop-item.logout:hover {
+  background: rgba(239, 68, 68, 0.15) !important;
+}
+
+/* 4. Cashflow Grid Cards */
+html[data-theme="dark"] .gopay-cashflow-card {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+}
+
+html[data-theme="dark"] .cashflow-title {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .cashflow-icon-circle.in {
+  background: rgba(5, 150, 105, 0.2) !important;
+  color: #34d399 !important;
+}
+
+html[data-theme="dark"] .cashflow-icon-circle.out {
+  background: rgba(220, 38, 38, 0.2) !important;
+  color: #f87171 !important;
+}
+
+/* 5. Section Titles & Badges */
+html[data-theme="dark"] .gopay-section-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .gopay-section-sub {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .gopay-link-btn {
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .gopay-toggle-more-btn {
+  background: rgba(30, 41, 59, 0.8) !important;
+  color: #38bdf8 !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .gopay-count-badge {
+  background: rgba(30, 41, 59, 0.8) !important;
+  color: #38bdf8 !important;
+  border: 1px solid #334155 !important;
+}
+
+/* 6. Donut Chart Card & Distribution List */
+html[data-theme="dark"] .mobile-donut-card {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+}
+
+html[data-theme="dark"] .mobile-chart-metric-toggle {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+}
+
+html[data-theme="dark"] .mobile-chart-toggle-btn {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .mobile-chart-toggle-btn.active {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .center-pos-code {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .center-pos-pct {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .mobile-pos-row.active {
+  background: rgba(30, 41, 59, 0.6) !important;
+}
+
+html[data-theme="dark"] .mobile-pos-name {
+  color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] .mobile-pos-pct {
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .mobile-pos-track {
+  background: #334155 !important;
+}
+
+/* 7. Program Pos Grid Tiles */
+html[data-theme="dark"] .gopay-program-tile {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2) !important;
+}
+
+html[data-theme="dark"] .gopay-program-tile:hover {
+  border-color: #38bdf8 !important;
+  background: rgba(30, 41, 59, 0.9) !important;
+}
+
+html[data-theme="dark"] .gopay-tile-name {
+  color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] .gopay-tile-icon.theme-1 {
+  background: rgba(2, 132, 199, 0.2) !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .gopay-tile-icon.theme-2 {
+  background: rgba(5, 150, 105, 0.2) !important;
+  color: #34d399 !important;
+}
+
+html[data-theme="dark"] .gopay-tile-icon.theme-3 {
+  background: rgba(217, 119, 6, 0.2) !important;
+  color: #fbbf24 !important;
+}
+
+html[data-theme="dark"] .gopay-tile-icon.theme-4 {
+  background: rgba(124, 58, 237, 0.2) !important;
+  color: #c084fc !important;
+}
+
+/* 8. Feed Recent Transactions Card */
+html[data-theme="dark"] .gopay-feed-card {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+}
+
+html[data-theme="dark"] .gopay-feed-row {
+  border-bottom: 1px solid rgba(51, 65, 85, 0.4) !important;
+}
+
+html[data-theme="dark"] .gopay-feed-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .gopay-feed-meta {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .gopay-feed-date {
+  color: #64748b !important;
+}
+
+html[data-theme="dark"] .gopay-feed-avatar.income {
+  background: rgba(5, 150, 105, 0.15) !important;
+}
+
+html[data-theme="dark"] .gopay-feed-avatar.expense {
+  background: rgba(220, 38, 38, 0.15) !important;
+}
+
+html[data-theme="dark"] .gopay-feed-value.income {
+  color: #34d399 !important;
+}
+
+html[data-theme="dark"] .gopay-feed-value.expense {
+  color: #f87171 !important;
+}
+
+html[data-theme="dark"] .gopay-empty-state {
+  color: #94a3b8 !important;
+}
+
+/* 9. Forms & Inputs (Transaksi & Infaq Barang) */
+html[data-theme="dark"] .gopay-form-card {
+  background: rgba(15, 23, 42, 0.90) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-theme="dark"] .gopay-form-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .gopay-form-subtitle {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .gopay-label {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .gopay-input,
+html[data-theme="dark"] .gopay-select {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .gopay-input:focus,
+html[data-theme="dark"] .gopay-select:focus {
+  background: #0f172a !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2) !important;
+}
+
+html[data-theme="dark"] .gopay-input-prefix {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .gopay-segmented-ctrl {
+  background: #1e293b !important;
+  border: 1px solid #334155 !important;
+}
+
+html[data-theme="dark"] .gopay-segment-btn {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .gopay-segment-btn.active-in {
+  background: #059669 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.4) !important;
+}
+
+html[data-theme="dark"] .gopay-segment-btn.active-out {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4) !important;
+}
+
+html[data-theme="dark"] .gopay-camera-action-btn {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .gopay-camera-action-btn.camera,
+html[data-theme="dark"] .gopay-camera-action-btn.gallery {
+  background: rgba(2, 132, 199, 0.15) !important;
+  border-color: #0284c7 !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .gopay-camera-remove-btn {
+  background: rgba(220, 38, 38, 0.2) !important;
+  color: #f87171 !important;
+  border-top-color: rgba(220, 38, 38, 0.3) !important;
+}
+
+html[data-theme="dark"] .gopay-alert.success {
+  background: rgba(5, 150, 105, 0.2) !important;
+  color: #34d399 !important;
+  border-color: rgba(5, 150, 105, 0.4) !important;
+}
+
+html[data-theme="dark"] .gopay-alert.danger {
+  background: rgba(220, 38, 38, 0.2) !important;
+  color: #f87171 !important;
+  border-color: rgba(220, 38, 38, 0.4) !important;
+}
+
+/* 10. Detail Pos Donatur Subview */
+html[data-theme="dark"] .gopay-back-btn {
+  background: rgba(15, 23, 42, 0.88) !important;
+  color: #38bdf8 !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .pos-search-box {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .pos-search-input {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .pos-search-clear {
+  background: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .pos-donor-card {
+  background: rgba(15, 23, 42, 0.88) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+}
+
+html[data-theme="dark"] .pos-donor-name {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .pos-donor-meta {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .pos-donor-note {
+  color: #cbd5e1 !important;
+  background: rgba(30, 41, 59, 0.8) !important;
+  border-left-color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .pos-donor-amount {
+  color: #38bdf8 !important;
+}
+
+/* 11. Floating Curved Bottom Dock */
+html[data-theme="dark"] .gopay-bottom-dock {
+  background: rgba(15, 23, 42, 0.92) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(51, 65, 85, 0.6) !important;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55) !important;
+}
+
+html[data-theme="dark"] .center-btn-inner {
+  border-color: #0f172a !important;
+}
+
+html[data-theme="dark"] .gopay-dock-item {
+  color: #64748b !important;
+}
+
+html[data-theme="dark"] .gopay-dock-item:hover {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .gopay-dock-item.active {
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .gopay-dock-item.active .dock-label {
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .gopay-dock-item.active .dock-active-pill {
+  background: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .gopay-dock-item.active .dock-icon-wrapper svg {
+  stroke: #38bdf8 !important;
+  filter: drop-shadow(0 2px 6px rgba(56, 189, 248, 0.45)) !important;
+}
+
+/* 12. Laporan Cetak (Tab Laporan) Dark Mode */
+html[data-theme="dark"] .laporan-intro-header {
+  background: rgba(15, 23, 42, 0.90) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-theme="dark"] .intro-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .intro-desc {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .catalog-filter-bar {
+  border-top-color: #334155 !important;
+}
+
+html[data-theme="dark"] .catalog-filter-item label {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .catalog-filter-item select,
+html[data-theme="dark"] .filter-date-input {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .catalog-filter-item select:focus,
+html[data-theme="dark"] .filter-date-input:focus {
+  border-color: #38bdf8 !important;
+  background: #0f172a !important;
+}
+
+html[data-theme="dark"] .mode-toggle-group {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .mode-toggle-btn {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .mode-toggle-btn.active {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .report-catalog-card {
+  background: rgba(15, 23, 42, 0.90) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-theme="dark"] .report-catalog-card:hover {
+  border-color: #38bdf8 !important;
+  box-shadow: 0 18px 36px rgba(56, 189, 248, 0.15) !important;
+}
+
+html[data-theme="dark"] .card-icon-bubble {
+  background: rgba(2, 132, 199, 0.15) !important;
+}
+
+html[data-theme="dark"] .card-badge {
+  background: #1e293b !important;
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .card-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .card-desc {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .card-action-link {
+  color: #38bdf8 !important;
+}
+
+/* =========================================================
+   COMPREHENSIVE DARK MODE: ELIMINASI SEMUA ELEMEN PUTIH
+   ========================================================= */
+
+/* 1. Sidebar Brand & Pos Scope & Mobile Drawer */
+html[data-theme="dark"] .desktop-sidebar {
+  background: transparent !important;
+  color: #f8fafc !important;
+}
+
+/* Khusus drawer sidebar di layar mobile/tablet tetap seamless semi-transparan dengan blur (glassmorphism) */
+@media (max-width: 1024px) {
+  html[data-theme="dark"] .desktop-sidebar {
+    background: rgba(15, 23, 42, 0.75) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border-right: 1px solid rgba(51, 65, 85, 0.5) !important;
+    box-shadow: 10px 0 40px rgba(0, 0, 0, 0.5) !important;
+  }
+}
+
+html[data-theme="dark"] .brand-name {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .brand-sub {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .brand-icon {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .live-radar-dot {
+  border-color: #0f172a !important;
+}
+
+html[data-theme="dark"] .pos-scope-card {
+  background: rgba(30, 41, 59, 0.9) !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .pos-scope-card:hover {
+  background: rgba(51, 65, 85, 0.95) !important;
+  border-color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .pos-scope-label {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .pos-scope-select {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .pos-scope-select:disabled {
+  background: #1e293b !important;
+  color: #94a3b8 !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .nav-link {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .nav-link svg {
+  stroke: #64748b !important;
+}
+
+html[data-theme="dark"] .nav-link:hover {
+  background: rgba(30, 41, 59, 0.8) !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .nav-link:hover svg {
+  stroke: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .nav-link.active {
+  background: linear-gradient(135deg, #0284c7 0%, #38bdf8 50%, #0284c7 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4) !important;
+}
+
+html[data-theme="dark"] .nav-link.active svg {
+  stroke: #ffffff !important;
+}
+
+html[data-theme="dark"] .user-profile-row {
+  background: rgba(30, 41, 59, 0.85) !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .user-profile-row:hover,
+html[data-theme="dark"] .user-profile-row.active {
+  background: rgba(51, 65, 85, 0.95) !important;
+  border-color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .user-info-box .user-name {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .user-info-box .user-role {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .profile-dropdown-menu {
+  background: rgba(15, 23, 42, 0.96) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+}
+
+html[data-theme="dark"] .dropdown-user-name {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .dropdown-user-email {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .dropdown-menu-item {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .dropdown-menu-item:hover {
+  background: #1e293b !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .dropdown-menu-item.logout {
+  color: #f87171 !important;
+}
+
+html[data-theme="dark"] .dropdown-menu-item.logout:hover {
+  background: rgba(239, 68, 68, 0.15) !important;
+  color: #fca5a5 !important;
+}
+
+html[data-theme="dark"] .sidebar-backdrop {
+  background: rgba(0, 0, 0, 0.75) !important;
+}
+
+/* 2. Tombol Navigasi & Hamburger */
+html[data-theme="dark"] .btn-hamburger-sidebar {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .btn-hamburger-sidebar:hover {
+  background: #334155 !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .btn-close-sidebar-mobile {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+/* 3. Metric Toggles & Badges */
+html[data-theme="dark"] .btn-metric-toggle:hover {
+  background: #334155 !important;
+}
+
+html[data-theme="dark"] .btn-metric-toggle.active.income,
+html[data-theme="dark"] .btn-metric-toggle.active.expense,
+html[data-theme="dark"] .btn-metric-toggle.active.net {
+  background: #0f172a !important;
+  border: 1px solid #334155 !important;
+}
+
+html[data-theme="dark"] .blade-status-badge {
+  background: #082f49 !important;
+  border-color: #0284c7 !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .blade-mini-badge.blue {
+  background: #082f49 !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .stat-bar-code {
+  background: #082f49 !important;
+  border-color: #0284c7 !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .pill-badge.up {
+  background: #06283d !important;
+  color: #38bdf8 !important;
+  border-color: #0284c7 !important;
+}
+
+html[data-theme="dark"] .pill-badge.down {
+  background: #3b0d0c !important;
+  color: #f87171 !important;
+  border-color: #ef4444 !important;
+}
+
+html[data-theme="dark"] .pill-badge.neutral {
+  background: #1e293b !important;
+  color: #94a3b8 !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .badge-tag {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .badge-tag.badge-pos {
+  background: #082f49 !important;
+  color: #38bdf8 !important;
+  border: 1px solid #0284c7 !important;
+}
+
+html[data-theme="dark"] .badge-tag.badge-income {
+  background: #062e2e !important;
+  color: #5eead4 !important;
+}
+
+html[data-theme="dark"] .badge-tag.badge-expense {
+  background: #3b0d0c !important;
+  color: #fca5a5 !important;
+}
+
+html[data-theme="dark"] .btn-goto-shortcut,
+html[data-theme="dark"] .btn-view-photo,
+html[data-theme="dark"] .btn-foto-link {
+  background: #082f49 !important;
+  color: #38bdf8 !important;
+  border-color: #0284c7 !important;
+}
+
+html[data-theme="dark"] .btn-goto-shortcut:hover,
+html[data-theme="dark"] .btn-view-photo:hover,
+html[data-theme="dark"] .btn-foto-link:hover {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+/* 4. Login Glass Card & Modals */
+html[data-theme="dark"] .login-glass-card,
+html[data-theme="dark"] .modal-content-custom,
+html[data-theme="dark"] .modal-header-custom,
+html[data-theme="dark"] .modal-footer-custom {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .login-logo-circle {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .font-settings-icon-circle {
+  background: #082f49 !important;
+  color: #38bdf8 !important;
+}
+
+/* 5. Override Inline White Backgrounds in Sections & Sub-Cards */
+html[data-theme="dark"] div[style*="background: #f8fafc"],
+html[data-theme="dark"] div[style*="background: #f1f5f9"],
+html[data-theme="dark"] div[style*="background: #ffffff"],
+html[data-theme="dark"] div[style*="background: #eff6ff"],
+html[data-theme="dark"] div[style*="background: #f0f9ff"],
+html[data-theme="dark"] div[style*="background: #e0f2fe"],
+html[data-theme="dark"] div[style*="background: white"],
+html[data-theme="dark"] div[style*="background: rgb(255, 255, 255)"],
+html[data-theme="dark"] div[style*="background-color: #f8fafc"],
+html[data-theme="dark"] div[style*="background-color: #f1f5f9"],
+html[data-theme="dark"] div[style*="background-color: #ffffff"],
+html[data-theme="dark"] div[style*="background-color: white"] {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] span[style*="background: #f1f5f9"],
+html[data-theme="dark"] span[style*="background: #f8fafc"],
+html[data-theme="dark"] span[style*="background: #e2e8f0"],
+html[data-theme="dark"] span[style*="background: #f0f9ff"],
+html[data-theme="dark"] span[style*="background: #eff6ff"] {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] tr[style*="background: #f8fafc"],
+html[data-theme="dark"] tr[style*="background: #f1f5f9"],
+html[data-theme="dark"] tr[style*="background: #ffffff"],
+html[data-theme="dark"] tr[style*="background: white"] {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] button[style*="background: #e0f2fe"],
+html[data-theme="dark"] button[style*="background: #eff6ff"],
+html[data-theme="dark"] button[style*="background: #f0f9ff"] {
+  background-color: #082f49 !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] button[style*="background: #fee2e2"],
+html[data-theme="dark"] button[style*="background: #fef2f2"] {
+  background-color: #450a0a !important;
+  color: #f87171 !important;
+}
+
+/* 6. Donut Progress Bar Background & Track */
+html[data-theme="dark"] circle[stroke="#f1f5f9"] {
+  stroke: #1e293b !important;
+}
+
+/* 8. Donut Proporsi Pos Section Components */
+.chart-badge-purple {
+  color: #7c3aed;
+  background: #f5f3ff;
+  border-color: #ddd6fe;
+}
+
+.pos-registered-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8fafc;
+  padding: 6px 12px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.pos-registered-text {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #475569;
+}
+
+.donut-bg-track {
+  stroke: #f1f5f9;
+}
+
+.donut-center-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.donut-center-value {
+  font-size: 15px;
+  font-weight: 900;
+  color: #0f172a;
+}
+
+.pos-donut-row {
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pos-donut-row.hovered {
+  background: #ffffff;
+  border-color: var(--pos-hover-border, #0284c7);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1);
+}
+
+.pos-donut-name {
+  font-size: 12px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.pos-code-badge {
+  font-size: 10px;
+  font-weight: 800;
+  color: #64748b;
+  background: #e2e8f0;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.pos-donut-track {
+  height: 6px;
+  width: 100%;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.pos-donut-subinfo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: #64748b;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.donut-footer-row {
+  margin-top: 14px;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11.5px;
+  color: #64748b;
+}
+
+.abbr-badge {
+  background: #f1f5f9;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10.5px;
+}
+
+.donut-sync-text {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* Dark Mode Overrides for Donut Proporsi Pos Section */
+html[data-theme="dark"] .chart-badge-purple {
+  background: #2e1065 !important;
+  color: #c084fc !important;
+  border-color: #7c3aed !important;
+}
+
+html[data-theme="dark"] .pos-registered-badge {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .pos-registered-text {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .donut-bg-track {
+  stroke: #1e293b !important;
+}
+
+html[data-theme="dark"] .donut-center-label {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .donut-center-value {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .pos-donut-row {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .pos-donut-row.hovered {
+  background: #27354a !important;
+  border-color: var(--pos-hover-border, #38bdf8) !important;
+}
+
+html[data-theme="dark"] .pos-donut-name {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .pos-code-badge {
+  background: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .pos-donut-track {
+  background: #334155 !important;
+}
+
+html[data-theme="dark"] .pos-donut-subinfo {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .donut-footer-row {
+  border-top-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .abbr-badge {
+  background: #1e293b !important;
+  color: #94a3b8 !important;
+  border: 1px solid #334155 !important;
+}
+
+html[data-theme="dark"] .abbr-badge strong {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .donut-sync-text {
+  color: #f8fafc !important;
+}
+
+/* 9. Katalog Pos Program Donasi Cards */
+.catalog-pos-card {
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.catalog-pos-card:hover {
+  transform: translateY(-2px);
+  border-color: #0284c7;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+
+.catalog-pos-card.selected {
+  border: 2px solid #0284c7;
+  background-color: #f0f9ff;
+  box-shadow: 0 4px 14px rgba(3, 105, 161, 0.18);
+}
+
+.catalog-pos-code-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.catalog-pos-code-badge.selected {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.catalog-pos-title {
+  font-weight: 700;
+  font-size: 13.5px;
+  color: #1e293b;
+  line-height: 1.3;
+}
+
+.catalog-pos-title.selected {
+  color: #0369a1;
+}
+
+.catalog-pos-desc {
+  font-size: 11px;
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.catalog-pos-link {
+  font-size: 12px;
+  font-weight: 600;
+  border-top: 1px dashed #f1f5f9;
+}
+
+.catalog-abbr-footer {
+  margin-top: 14px;
+  border-top: 1px dashed #e2e8f0;
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.table-total-row {
+  background: #f8fafc;
+  font-weight: 700;
+}
+
+/* Dark Mode for Katalog Pos Program Donasi Cards */
+html[data-theme="dark"] .catalog-pos-card {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25) !important;
+}
+
+html[data-theme="dark"] .catalog-pos-card:hover {
+  background-color: #27354a !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35) !important;
+}
+
+html[data-theme="dark"] .catalog-pos-card.selected {
+  background-color: #082f49 !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 4px 16px rgba(56, 189, 248, 0.25) !important;
+}
+
+html[data-theme="dark"] .catalog-pos-code-badge {
+  background: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .catalog-pos-code-badge.selected {
+  background: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .catalog-pos-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .catalog-pos-title.selected {
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .catalog-pos-desc {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .catalog-pos-link {
+  border-top-color: #334155 !important;
+}
+
+html[data-theme="dark"] .catalog-abbr-footer {
+  border-top-color: #334155 !important;
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .table-total-row {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-top: 1px solid #334155 !important;
+}
+
+/* 10. Pusat Cetak Dokumen & Laporan PDF (LaporanCetak) Dark Mode */
+html[data-theme="dark"] .laporan-intro-header {
+  background: rgba(15, 23, 42, 0.92) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+html[data-theme="dark"] .intro-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .intro-desc {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .intro-title-badge {
+  background: #082f49 !important;
+  color: #38bdf8 !important;
+  border: 1px solid #0284c7 !important;
+}
+
+html[data-theme="dark"] .catalog-filter-bar {
+  border-top-color: #334155 !important;
+}
+
+html[data-theme="dark"] .catalog-filter-item label {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .catalog-filter-item select,
+html[data-theme="dark"] .filter-date-input,
+html[data-theme="dark"] .filter-pos-select {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .catalog-filter-item select,
+html[data-theme="dark"] .filter-pos-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") !important;
+}
+
+html[data-theme="dark"] .catalog-filter-item select:hover,
+html[data-theme="dark"] .filter-date-input:hover,
+html[data-theme="dark"] .filter-pos-select:hover {
+  border-color: #0284c7 !important;
+  background-color: #0f172a !important;
+}
+
+html[data-theme="dark"] .catalog-filter-item select:focus,
+html[data-theme="dark"] .filter-date-input:focus,
+html[data-theme="dark"] .filter-pos-select:focus {
+  background-color: #0f172a !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.18), 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+html[data-theme="dark"] .report-catalog-card {
+  background: rgba(15, 23, 42, 0.92) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35) !important;
+}
+
+html[data-theme="dark"] .report-catalog-card:hover {
+  background: rgba(30, 41, 59, 0.95) !important;
+  border-color: #38bdf8 !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5) !important;
+}
+
+html[data-theme="dark"] .card-icon-bubble {
+  background: #082f49 !important;
+}
+
+html[data-theme="dark"] .card-icon-bubble svg {
+  stroke: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .card-badge {
+  background: #1e293b !important;
+  color: #94a3b8 !important;
+  border: 1px solid #334155 !important;
+}
+
+html[data-theme="dark"] .card-category-label {
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .card-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .card-desc {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .card-action-bar {
+  border-top-color: #334155 !important;
+}
+
+/* 11. Neraca Dinamis Pos & Neraca Umum Dark Mode Overrides */
+.neraca-group-header {
+  background: #f8fafc;
+  font-weight: 700;
+}
+
+html[data-theme="dark"] .neraca-header-box {
+  border-bottom-color: #334155 !important;
+}
+
+html[data-theme="dark"] .neraca-tag {
+  background: #082f49 !important;
+  color: #38bdf8 !important;
+  border: 1px solid #0284c7 !important;
+}
+
+html[data-theme="dark"] .neraca-kop-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .neraca-kop-sub {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .neraca-sub-card {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .neraca-section-title {
+  color: #f8fafc !important;
+  border-bottom-color: #334155 !important;
+}
+
+html[data-theme="dark"] .neraca-group-header {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .neraca-group-header td {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  font-weight: 700;
+}
+
+html[data-theme="dark"] .neraca-cell-name {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .neraca-table th {
+  background-color: #1e293b !important;
+  color: #94a3b8 !important;
+  border-bottom-color: #334155 !important;
+}
+
+/* 12. Multi-Pos Checkbox Select Box (MasterUsers) */
+.multi-pos-select-box {
+  max-height: 150px;
+  overflow-y: auto;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.pos-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: transparent;
+  color: #334155;
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.pos-checkbox-label.checked {
+  background: #f0f9ff;
+  color: #0284c7;
+  font-weight: 700;
+}
+
+/* Dark Mode Overrides for Multi-Pos Checkbox Select Box */
+html[data-theme="dark"] .multi-pos-select-box {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+html[data-theme="dark"] .pos-checkbox-label {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .pos-checkbox-label.checked {
+  background: #082f49 !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .pos-checkbox-label:hover {
+  background: #27354a !important;
+}
+
+/* 13. Dark Mode Overrides for Topbar Settings Dropdown Menu */
+html[data-theme="dark"] .btn-topbar-menu-trigger {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .btn-topbar-menu-trigger:hover,
+html[data-theme="dark"] .btn-topbar-menu-trigger.active {
+  background: #0f172a !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.2) !important;
+}
+
+html[data-theme="dark"] .topbar-settings-dropdown-menu {
+  background: rgba(15, 23, 42, 0.96) !important;
+  border-color: #334155 !important;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+html[data-theme="dark"] .topbar-dropdown-header-title {
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .topbar-dropdown-header-subtitle {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"] .topbar-dropdown-divider {
+  background: #334155 !important;
+}
+
+html[data-theme="dark"] .topbar-dropdown-item {
+  color: #cbd5e1 !important;
+}
+
+html[data-theme="dark"] .topbar-dropdown-item:hover {
+  background: rgba(30, 41, 59, 0.8) !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .topbar-dropdown-item-icon {
+  background: #1e293b !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .topbar-dropdown-item:hover .topbar-dropdown-item-icon {
+  background: #082f49 !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .topbar-dropdown-item-text .item-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"] .topbar-dropdown-item:hover .topbar-dropdown-item-text .item-title {
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"] .topbar-dropdown-item-text .item-desc {
+  color: #94a3b8 !important;
+}
+
+/* =========================================================
+   14. OPTIMASI PERINGKASAN TEKS OTOMATIS SAAT TAMPIL DI ANDROID / MOBILE
+   Menghindari teks kepanjangan, teks terpotong, dan tata letak padat rapi
+   ========================================================= */
+@media (max-width: 768px) {
+  /* Skala font global proporsional */
+  html {
+    font-size: 85% !important;
+  }
+
+  /* Ringkas judul & teks utama */
+  h1, .blade-main-title {
+    font-size: 17px !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.2px !important;
+  }
+
+  h2, .topbar-title h2, .pos-detail-name, .gopay-header-greeting {
+    font-size: 14px !important;
+    line-height: 1.25 !important;
+  }
+
+  h3, h4, .blade-card-title, .panel-header h3, .gopay-section-title, .chart-main-title {
+    font-size: 12.5px !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Nilai angka stat card yang ringkas pas satu baris */
+  .blade-card-value, .stat-value, .gopay-balance-amount, .gopay-wallet-balance-num {
+    font-size: 15.5px !important;
+    letter-spacing: -0.3px !important;
+  }
+
+  /* Keterangan & sub-deskripsi yang panjang disederhanakan/diringkas */
+  .blade-sub-desc,
+  .chart-sub-desc,
+  .login-header-center p {
+    font-size: 11px !important;
+    line-height: 1.35 !important;
+  }
+
+  .text-muted, small, .blade-card-desc, .blade-eyebrow, .gopay-feed-meta {
+    font-size: 10px !important;
+  }
+
+  /* Tabel data & form kontrol lebih ramping */
+  .desktop-table td,
+  .desktop-table th,
+  .table-custom td,
+  .table-custom th,
+  .portal-table td,
+  .portal-table th {
+    font-size: 11.5px !important;
+    padding: 7px 9px !important;
+  }
+
+  .form-control,
+  .form-select,
+  .form-label,
+  input,
+  select,
+  textarea {
+    font-size: 12px !important;
+  }
+
+  .form-label {
+    margin-bottom: 3px !important;
+  }
+
+  /* Badge dan tombol lebih padat */
+  .badge, .badge-tag, .pos-shortcut-hint, .abbr-badge {
+    font-size: 9.5px !important;
+    padding: 2px 6px !important;
+  }
+
+  /* Toggle tombol mode & metrik ringkas */
+  .btn-metric-toggle, .mode-toggle-btn {
+    font-size: 10.5px !important;
+    padding: 3px 8px !important;
+  }
+
+  /* Sembunyikan elemen teks panjang berulang pada mobile */
+  .text-full {
+    display: none !important;
+  }
+
+  .text-compact {
+    display: inline !important;
+  }
+}
+
+
+/* =========================================================
+   TEMA GURUN PASIR & KAFILAH UNTA ISLAMI (GOLDEN SAND THEME OVERRIDES)
+   Mengubah seluruh elemen bernuansa biru/cyan menjadi kuning pasir, amber, dan emas hangat
+   ========================================================= */
+html[data-bg-theme="islamic_desert"] {
+  --primary: #d97706 !important;
+  --primary-hover: #b45309 !important;
+  --primary-light: #fef3c7 !important;
+  --primary-border: #fde68a !important;
+  --accent: #f59e0b !important;
+  --surface-subtle: #fffbeb !important;
+  --border-focus: #d97706 !important;
+  --success-text: #d97706 !important;
+  --info-text: #d97706 !important;
+  --info-bg: #fef3c7 !important;
+}
+
+/* 1. Tombol Utama & Action Button */
+html[data-bg-theme="islamic_desert"] .btn-primary-action,
+html[data-bg-theme="islamic_desert"] .btn-submit-primary {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 50%, #d97706 100%) !important;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3) !important;
+}
+
+html[data-bg-theme="islamic_desert"] .btn-primary-action:hover,
+html[data-bg-theme="islamic_desert"] .btn-submit-primary:hover {
+  box-shadow: 0 8px 20px rgba(217, 119, 6, 0.4) !important;
+}
+
+html[data-bg-theme="islamic_desert"] .btn-primary-small {
+  background: #d97706 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .btn-primary-small:hover {
+  background: #b45309 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .btn-secondary-action,
+html[data-bg-theme="islamic_desert"] .btn-blade-action,
+html[data-bg-theme="islamic_desert"] .btn-action-outline {
+  color: #b45309 !important;
+  border-color: #fde68a !important;
+  background: #fffbeb !important;
+}
+
+html[data-bg-theme="islamic_desert"] .btn-secondary-action:hover,
+html[data-bg-theme="islamic_desert"] .btn-blade-action:hover,
+html[data-bg-theme="islamic_desert"] .btn-action-outline:hover {
+  background: #fef3c7 !important;
+  border-color: #f59e0b !important;
+}
+
+html[data-bg-theme="islamic_desert"] .btn-text {
+  color: #d97706 !important;
+}
+
+/* 2. Topbar Header & Refresh */
+html[data-bg-theme="islamic_desert"] .btn-refresh-top {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+  box-shadow: 0 3px 10px rgba(217, 119, 6, 0.25) !important;
+}
+
+html[data-bg-theme="islamic_desert"] .btn-topbar-menu-trigger.active {
+  border-color: #d97706 !important;
+  color: #d97706 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .topbar-dropdown-item-icon.theme-icon svg {
+  color: #d97706 !important;
+}
+
+/* 3. Sidebar Navigasi */
+html[data-bg-theme="islamic_desert"] .nav-link.active,
+html[data-bg-theme="islamic_desert"] .desktop-sidebar .nav-link.active {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.35) !important;
+  color: #ffffff !important;
+}
+
+html[data-bg-theme="islamic_desert"] .nav-link.active svg {
+  stroke: #ffffff !important;
+  color: #ffffff !important;
+}
+
+html[data-bg-theme="islamic_desert"] .nav-link:hover:not(.active) {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .pos-scope-select:focus {
+  border-color: #d97706 !important;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15) !important;
+}
+
+html[data-bg-theme="islamic_desert"] .brand-tagline {
+  color: #d97706 !important;
+}
+
+/* 4. Blade Cards, Stat Bars & Hero */
+html[data-bg-theme="islamic_desert"] .blade-card.blue .blade-card-top-bar,
+html[data-bg-theme="islamic_desert"] .blade-card.emerald .blade-card-top-bar {
+  background: linear-gradient(90deg, #f59e0b, #d97706) !important;
+}
+
+html[data-bg-theme="islamic_desert"] .blade-card.blue .blade-card-icon,
+html[data-bg-theme="islamic_desert"] .blade-card.emerald .blade-card-icon {
+  background: #d97706 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .blade-card.blue .blade-card-footer,
+html[data-bg-theme="islamic_desert"] .blade-card.emerald .blade-card-footer {
+  color: #b45309 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .blade-card.blue .blade-footer-dot,
+html[data-bg-theme="islamic_desert"] .blade-card.emerald .blade-footer-dot {
+  background: #d97706 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .blade-hero-glass-box {
+  background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #78350f 100%) !important;
+}
+
+html[data-bg-theme="islamic_desert"] .stat-val-income {
+  color: #d97706 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .stat-bar-fill.income {
+  background: linear-gradient(90deg, #f59e0b, #d97706) !important;
+}
+
+/* 5. Katalog Pos & Badges */
+html[data-bg-theme="islamic_desert"] .catalog-pos-card.selected {
+  border-color: #d97706 !important;
+  background: #fffbeb !important;
+}
+
+html[data-bg-theme="islamic_desert"] .catalog-pos-code-badge.selected {
+  background: #d97706 !important;
+  color: #ffffff !important;
+}
+
+html[data-bg-theme="islamic_desert"] .catalog-pos-title.selected {
+  color: #b45309 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .catalog-pos-link {
+  color: #d97706 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .badge-metode-tag,
+html[data-bg-theme="islamic_desert"] .badge-blue,
+html[data-bg-theme="islamic_desert"] .badge-sky,
+html[data-bg-theme="islamic_desert"] .total-count-badge {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+  border-color: #fde68a !important;
+}
+
+/* 6. Form Controls & Inputs Focus */
+html[data-bg-theme="islamic_desert"] input:focus,
+html[data-bg-theme="islamic_desert"] select:focus,
+html[data-bg-theme="islamic_desert"] textarea:focus,
+html[data-bg-theme="islamic_desert"] .form-control:focus {
+  border-color: #d97706 !important;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15) !important;
+}
+
+html[data-bg-theme="islamic_desert"] .pill-tab.active {
+  background: #d97706 !important;
+  color: #ffffff !important;
+}
+
+html[data-bg-theme="islamic_desert"] .font-active-badge {
+  background: #d97706 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .font-option-card.selected {
+  border-color: #d97706 !important;
+  background: #fffbeb !important;
+}
+
+/* 7. Mobile App Overrides */
+html[data-bg-theme="islamic_desert"] .gopay-bottom-nav .gopay-nav-item.active {
+  color: #d97706 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .gopay-badge-avatar {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+}
+
+html[data-bg-theme="islamic_desert"] .gopay-user-badge.active {
+  border-color: #d97706 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .gopay-wallet-card {
+  background: linear-gradient(135deg, #b45309 0%, #d97706 50%, #92400e 100%) !important;
+}
+
+html[data-bg-theme="islamic_desert"] .gopay-hero-slider-tab.active {
+  background: #d97706 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .gopay-action-btn:hover {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+}
+
+html[data-bg-theme="islamic_desert"] .gopay-stat-pill.income {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+  border-color: #fde68a !important;
+}
+
+/* ==========================================================================
+   TEMA NUANSA ISLAMI (PESANTREN LATEE) - THEME OVERRIDES & HIGH CONTRAST
+   ========================================================================== */
+
+/* 1. Sidebar Menu - Transparan & Frosted Glass Blur Murni */
+html[data-bg-theme="islamic"] .desktop-sidebar {
+  background: rgba(255, 255, 255, 0.08) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: none !important;
+}
+
+/* Sidebar di Mode Gelap (Dark Mode) - Transparan & Frosted Glass Blur */
+html[data-theme="dark"][data-bg-theme="islamic"] .desktop-sidebar {
+  background: rgba(15, 23, 42, 0.15) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: none !important;
+}
+
+/* 2. Teks & Identitas Brand Sidebar */
+html[data-bg-theme="islamic"] .desktop-sidebar .brand-name {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html[data-bg-theme="islamic"] .desktop-sidebar .brand-sub {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+html[data-bg-theme="islamic"] .desktop-sidebar .nav-group-title {
+  color: #0284c7 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em !important;
+}
+
+html[data-bg-theme="islamic"] .desktop-sidebar .nav-link {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+html[data-bg-theme="islamic"] .desktop-sidebar .nav-link svg {
+  stroke: #0284c7 !important;
+  color: #0284c7 !important;
+}
+
+html[data-bg-theme="islamic"] .desktop-sidebar .nav-link:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.35) !important;
+  color: #0284c7 !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+html[data-bg-theme="islamic"] .desktop-sidebar .nav-link:hover:not(.active) svg {
+  stroke: #0284c7 !important;
+}
+
+html[data-theme="dark"][data-bg-theme="islamic"] .desktop-sidebar .brand-name {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"][data-bg-theme="islamic"] .desktop-sidebar .brand-sub {
+  color: #94a3b8 !important;
+}
+
+html[data-theme="dark"][data-bg-theme="islamic"] .desktop-sidebar .nav-group-title {
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"][data-bg-theme="islamic"] .desktop-sidebar .nav-link {
+  color: #f1f5f9 !important;
+}
+
+html[data-theme="dark"][data-bg-theme="islamic"] .desktop-sidebar .nav-link svg {
+  stroke: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+html[data-theme="dark"][data-bg-theme="islamic"] .desktop-sidebar .nav-link:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.10) !important;
+  color: #38bdf8 !important;
+}
+
+html[data-bg-theme="islamic"] .nav-link.active,
+html[data-bg-theme="islamic"] .desktop-sidebar .nav-link.active {
+  background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%) !important;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+html[data-bg-theme="islamic"] .nav-link.active svg {
+  stroke: #ffffff !important;
+  color: #ffffff !important;
+}
+
+/* 3. Pos Scope Card & User Profile di Sidebar Transparan */
+html[data-bg-theme="islamic"] .pos-scope-card {
+  background: rgba(255, 255, 255, 0.40) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03) !important;
+}
+
+html[data-bg-theme="islamic"] .pos-scope-label {
+  color: #0284c7 !important;
+  font-weight: 800 !important;
+}
+
+html[data-bg-theme="islamic"] .pos-scope-select {
+  color: #0f172a !important;
+  background: rgba(255, 255, 255, 0.70) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  font-weight: 600 !important;
+}
+
+html[data-bg-theme="islamic"] .user-profile-row {
+  background: rgba(255, 255, 255, 0.40) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.03) !important;
+}
+
+html[data-bg-theme="islamic"] .user-info-box .user-name {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-bg-theme="islamic"] .user-info-box .user-role {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+/* 4. Topbar Header & Konten */
+html[data-bg-theme="islamic"] .desktop-topbar {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.03) !important;
+}
+
+html[data-bg-theme="islamic"] .topbar-title h2 {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html[data-bg-theme="islamic"] .topbar-title p {
+  color: #475569 !important;
+  font-weight: 500 !important;
+}
+
+html[data-bg-theme="islamic"] .blade-header-row {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03) !important;
+}
+
+html[data-bg-theme="islamic"] .blade-main-title {
+  color: #0f172a !important;
+  font-weight: 900 !important;
+}
+
+html[data-bg-theme="islamic"] .blade-sub-desc {
+  color: #334155 !important;
+  font-weight: 500 !important;
+}
+
+html[data-bg-theme="islamic"] .blade-eyebrow {
+  color: #0284c7 !important;
+  font-weight: 800 !important;
+}
+
+/* Area filter, toolbar, dan judul halaman */
+html[data-bg-theme="islamic"] .filter-bar,
+html[data-bg-theme="islamic"] .table-filter-bar,
+html[data-bg-theme="islamic"] .search-filter-box,
+html[data-bg-theme="islamic"] .action-bar-top,
+html[data-bg-theme="islamic"] .portal-header-box {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.02) !important;
+}
+
+/* Memastikan seluruh label form & teks umum memiliki warna tegas tajam */
+html[data-bg-theme="islamic"] .form-label,
+html[data-bg-theme="islamic"] label {
+  color: #1e293b !important;
+  font-weight: 700 !important;
+}
+
+html[data-bg-theme="islamic"] .section-title,
+html[data-bg-theme="islamic"] .page-header-title {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+/* 5. Mobile App Header & Bottom Nav Overrides untuk Tema Pesantren Latee */
+html[data-bg-theme="islamic"] .gopay-top-header {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+}
+
+html[data-bg-theme="islamic"] .gopay-bottom-nav {
+  background: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+html[data-bg-theme="islamic"] .gopay-user-name {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-bg-theme="islamic"] .gopay-user-sub {
+  color: #475569 !important;
+}
+
+html[data-bg-theme="islamic"] .gopay-user-badge {
+  background: rgba(255, 255, 255, 0.70) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* 6. Mobile Section Headers & Unboxed Text Protection */
+html[data-bg-theme="islamic"] .gopay-section-header {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  border-radius: 14px !important;
+  padding: 8px 14px !important;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04) !important;
+}
+
+html[data-bg-theme="islamic"] .gopay-section-title {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html[data-bg-theme="islamic"] .gopay-section-sub {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-bg-theme="islamic"] .gopay-link-btn {
+  color: #0284c7 !important;
+  font-weight: 800 !important;
+}
+
+html[data-bg-theme="islamic"] .gopay-toggle-more-btn {
+  background: #f0f9ff !important;
+  color: #0284c7 !important;
+  border: 1px solid #bae6fd !important;
+  font-weight: 700 !important;
+}
+
+html[data-bg-theme="islamic"] .gopay-count-badge {
+  background: #e0f2fe !important;
+  color: #0369a1 !important;
+  font-weight: 700 !important;
+}
+
+html[data-bg-theme="islamic"] .gopay-tile-name {
+  color: #1e293b !important;
+  font-weight: 700 !important;
+}
+
+html[data-bg-theme="islamic"] .gopay-pos-detail-title-card {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  border-radius: 16px !important;
+}
+
+html[data-bg-theme="islamic"] .pos-detail-name {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html[data-bg-theme="islamic"] .pos-stat-label {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme="dark"][data-bg-theme="islamic"] .gopay-section-header {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"][data-bg-theme="islamic"] .gopay-section-title {
+  color: #f8fafc !important;
+}
+
+html[data-theme="dark"][data-bg-theme="islamic"] .gopay-section-sub {
+  color: #94a3b8 !important;
+}
+
+/* ==========================================================================
+   MODERN CUSTOM DROPDOWN COMPONENT STYLING & ANIMATIONS
+   ========================================================================== */
+
+.modern-custom-dropdown {
+  position: relative;
+  width: 100%;
+  display: inline-block;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.modern-dropdown-trigger {
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 9px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #0f172a;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+  text-align: left;
+}
+
+.modern-dropdown-trigger:hover:not(:disabled) {
+  border-color: #93c5fd;
+  background-color: #f8fafc;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
+}
+
+.modern-custom-dropdown.is-open {
+  z-index: 9999;
+}
+
+.modern-custom-dropdown.is-open .modern-dropdown-trigger {
+  border-color: #0284c7;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12), 0 2px 6px rgba(2, 132, 199, 0.08);
+}
+
+.modern-custom-dropdown.is-disabled .modern-dropdown-trigger {
+  background-color: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.modern-dropdown-selection {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modern-dropdown-selected-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.modern-dropdown-label-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modern-dropdown-placeholder {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.modern-dropdown-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0284c7;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-shrink: 0;
+}
+
+.modern-dropdown-arrow.is-rotated {
+  transform: rotate(180deg);
+}
+
+/* Sizes */
+.modern-custom-dropdown.size-sm .modern-dropdown-trigger {
+  padding: 6px 10px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.modern-custom-dropdown.size-lg .modern-dropdown-trigger {
+  padding: 12px 18px;
+  font-size: 14.5px;
+  border-radius: 14px;
+}
+
+/* Popover Menu */
+.modern-dropdown-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 10000;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+  animation: modernDropdownSpring 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+  transform-origin: top center;
+  padding: 6px;
+}
+
+.modern-dropdown-menu.direction-down {
+  top: calc(100% + 6px);
+}
+
+.modern-dropdown-menu.direction-up {
+  bottom: calc(100% + 6px);
+  transform-origin: bottom center;
+}
+
+@keyframes modernDropdownSpring {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modern-dropdown-search-wrap {
+  padding: 6px 6px 8px 6px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.modern-dropdown-search-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  font-size: 12.5px;
+  background: #f8fafc;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.2s;
+}
+
+.modern-dropdown-search-input:focus {
+  border-color: #0284c7;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+}
+
+.modern-dropdown-list {
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 2px 0;
+  overscroll-behavior: contain;
+}
+
+.modern-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  user-select: none;
+}
+
+.modern-dropdown-item:hover {
+  background: #f0f9ff;
+  color: #0284c7;
+  transform: translateX(3px);
+}
+
+.modern-dropdown-item.is-selected {
+  background: #e0f2fe;
+  color: #0369a1;
+  font-weight: 700;
+}
+
+.modern-dropdown-item.is-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.modern-dropdown-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.modern-dropdown-item-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modern-dropdown-check-icon {
+  color: #0284c7;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  animation: checkPop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+
+@keyframes checkPop {
+  0% { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.modern-dropdown-opt-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.modern-dropdown-empty {
+  padding: 12px;
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+/* Dark Mode Overrides for Modern Custom Dropdown */
+html[data-theme="dark"] .modern-dropdown-trigger {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] .modern-dropdown-trigger:hover:not(:disabled) {
+  border-color: #0284c7;
+  background: #0f172a;
+}
+
+html[data-theme="dark"] .modern-custom-dropdown.is-open .modern-dropdown-trigger {
+  border-color: #38bdf8;
+  background: #0f172a;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.18), 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+html[data-theme="dark"] .modern-dropdown-placeholder {
+  color: #64748b;
+}
+
+html[data-theme="dark"] .modern-dropdown-arrow {
+  color: #38bdf8;
+}
+
+html[data-theme="dark"] .modern-dropdown-menu {
+  background: rgba(15, 23, 42, 0.96);
+  border-color: #334155;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+html[data-theme="dark"] .modern-dropdown-search-wrap {
+  border-bottom-color: #1e293b;
+}
+
+html[data-theme="dark"] .modern-dropdown-search-input {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .modern-dropdown-search-input:focus {
+  border-color: #38bdf8;
+  background: #0f172a;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+
+html[data-theme="dark"] .modern-dropdown-item {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .modern-dropdown-item:hover {
+  background: #1e293b;
+  color: #38bdf8;
+}
+
+html[data-theme="dark"] .modern-dropdown-item.is-selected {
+  background: #082f49;
+  color: #38bdf8;
+}
+
+html[data-theme="dark"] .modern-dropdown-check-icon {
+  color: #38bdf8;
+}
+
+html[data-theme="dark"] .modern-dropdown-opt-badge {
+  background: #334155;
+  color: #94a3b8;
+}
+
+html[data-bg-theme="islamic"] .nav-link:hover:not(.active) {
+  background: rgba(2, 132, 199, 0.08) !important;
+  color: #0284c7 !important;
+}
+
+html[data-theme="dark"][data-bg-theme="islamic"] .nav-link:hover:not(.active) {
+  background: rgba(56, 189, 248, 0.12) !important;
+  color: #38bdf8 !important;
+}
+
+/* ==========================================================================
+   MODERN CUSTOM DATEPICKER STYLING
+   ========================================================================== */
+.modern-datepicker-container {
+  position: relative;
+  width: 100%;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.modern-datepicker-container.is-open {
+  z-index: 9999;
+}
+
+.modern-datepicker-trigger {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 14px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  box-sizing: border-box;
+  cursor: pointer;
+  outline: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1e293b;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.modern-datepicker-trigger:hover {
+  border-color: #0284c7;
+  background: #f8fafc;
+  box-shadow: 0 3px 8px rgba(2, 132, 199, 0.08);
+}
+
+.modern-datepicker-trigger.active,
+.modern-datepicker-trigger:focus-visible {
+  border-color: #0284c7;
+  background: #ffffff;
+  box-shadow: 0 0 0 3.5px rgba(2, 132, 199, 0.16), 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.modern-datepicker-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0284c7;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.modern-datepicker-trigger:hover .modern-datepicker-icon-wrap {
+  transform: scale(1.08);
+}
+
+.modern-datepicker-display {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.88rem;
+  letter-spacing: -0.01em;
+}
+
+.modern-datepicker-display.is-placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.modern-datepicker-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: #f1f5f9;
+  color: #64748b;
+  border-radius: 50%;
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.modern-datepicker-clear:hover {
+  background: #fee2e2;
+  color: #ef4444;
+  transform: scale(1.1);
+}
+
+/* Popover Calendar */
+.modern-datepicker-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  min-width: 290px;
+  width: 100%;
+  max-width: 320px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 12px;
+  z-index: 10000;
+  box-sizing: border-box;
+  animation: datepickerSlideIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top center;
+  backdrop-filter: blur(8px);
+}
+
+@keyframes datepickerSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Preset Shortcuts */
+.modern-datepicker-presets {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.preset-btn {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.preset-btn:hover {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-color: #bae6fd;
+}
+
+/* Header & Nav */
+.modern-datepicker-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.nav-arrow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: #f1f5f9;
+  border-radius: 8px;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.nav-arrow-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+  transform: scale(1.05);
+}
+
+.nav-title-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-title-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #0f172a;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.nav-title-btn:hover,
+.nav-title-btn.active {
+  background: #f1f5f9;
+  color: #0284c7;
+}
+
+/* Weekday labels */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.weekday-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  padding: 2px 0;
+}
+
+/* Days Grid */
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.day-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  padding: 0;
+}
+
+.day-cell:hover:not(.selected) {
+  background: #e0f2fe;
+  color: #0284c7;
+  transform: scale(1.06);
+}
+
+.day-cell.other-month {
+  color: #cbd5e1;
+  font-weight: 400;
+}
+
+.day-cell.today {
+  border: 1.5px solid #0284c7;
+  color: #0284c7;
+}
+
+.day-cell.selected {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.35);
+  transform: scale(1.05);
+}
+
+/* Month & Year Selection Grids */
+.modern-datepicker-months-grid,
+.modern-datepicker-years-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.modern-datepicker-years-grid {
+  grid-template-columns: repeat(4, 1fr);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.month-cell,
+.year-cell {
+  padding: 10px 6px;
+  border: 1px solid #f1f5f9;
+  background: #f8fafc;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.month-cell:hover,
+.year-cell:hover {
+  background: #e0f2fe;
+  color: #0284c7;
+  border-color: #bae6fd;
+}
+
+.month-cell.selected,
+.year-cell.selected {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 3px 8px rgba(2, 132, 199, 0.3);
+}
+
+/* Dark Mode Theme Support for CustomDatePicker */
+html[data-theme="dark"] .modern-datepicker-trigger {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="dark"] .modern-datepicker-trigger:hover {
+  border-color: #38bdf8;
+  background: #243248;
+}
+
+html[data-theme="dark"] .modern-datepicker-trigger.active,
+html[data-theme="dark"] .modern-datepicker-trigger:focus-visible {
+  border-color: #38bdf8;
+  background: #1e293b;
+  box-shadow: 0 0 0 3.5px rgba(56, 189, 248, 0.18);
+}
+
+html[data-theme="dark"] .modern-datepicker-icon-wrap {
+  color: #38bdf8;
+}
+
+html[data-theme="dark"] .modern-datepicker-display.is-placeholder {
+  color: #64748b;
+}
+
+html[data-theme="dark"] .modern-datepicker-clear {
+  background: #334155;
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .modern-datepicker-clear:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+html[data-theme="dark"] .modern-datepicker-popover {
+  background: rgba(15, 23, 42, 0.97);
+  border-color: #334155;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme="dark"] .modern-datepicker-presets {
+  border-bottom-color: #1e293b;
+}
+
+html[data-theme="dark"] .preset-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .preset-btn:hover {
+  background: #082f49;
+  color: #38bdf8;
+  border-color: #0284c7;
+}
+
+html[data-theme="dark"] .nav-arrow-btn {
+  background: #1e293b;
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .nav-arrow-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .nav-title-btn {
+  color: #f8fafc;
+}
+
+html[data-theme="dark"] .nav-title-btn:hover,
+html[data-theme="dark"] .nav-title-btn.active {
+  background: #1e293b;
+  color: #38bdf8;
+}
+
+html[data-theme="dark"] .weekday-label {
+  color: #64748b;
+}
+
+html[data-theme="dark"] .day-cell {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .day-cell:hover:not(.selected) {
+  background: #1e293b;
+  color: #38bdf8;
+}
+
+html[data-theme="dark"] .day-cell.other-month {
+  color: #475569;
+}
+
+html[data-theme="dark"] .day-cell.today {
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+html[data-theme="dark"] .day-cell.selected {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .month-cell,
+html[data-theme="dark"] .year-cell {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .month-cell:hover,
+html[data-theme="dark"] .year-cell:hover {
+  background: #082f49;
+  color: #38bdf8;
+  border-color: #0284c7;
+}
+
+html[data-theme="dark"] .month-cell.selected,
+html[data-theme="dark"] .year-cell.selected {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+}
+
+/* ==========================================================================
+   TABLE FONT SIZING CLASSES (Applied on table or container)
+   ========================================================================== */
+.table-font-mini,
+.table-font-mini .portal-table,
+.table-font-mini .desktop-table,
+.table-font-mini table,
+.portal-table.table-font-mini,
+.desktop-table.table-font-mini {
+  font-size: 10.5px !important;
+}
+
+.table-font-mini th,
+.table-font-mini .portal-table th,
+.table-font-mini .desktop-table th,
+.portal-table.table-font-mini th,
+.desktop-table.table-font-mini th {
+  font-size: 9.5px !important;
+  padding: 5px 8px !important;
+}
+
+.table-font-mini td,
+.table-font-mini .portal-table td,
+.table-font-mini .desktop-table td,
+.portal-table.table-font-mini td,
+.desktop-table.table-font-mini td {
+  font-size: 10.5px !important;
+  padding: 5px 8px !important;
+}
+
+.table-font-mini code,
+.table-font-mini .badge-tag,
+.table-font-mini button {
+  font-size: 10px !important;
+}
+
+.table-font-compact,
+.table-font-compact .portal-table,
+.table-font-compact .desktop-table,
+.table-font-compact table,
+.portal-table.table-font-compact,
+.desktop-table.table-font-compact {
+  font-size: 11px !important;
+}
+
+.table-font-compact th,
+.table-font-compact .portal-table th,
+.table-font-compact .desktop-table th,
+.portal-table.table-font-compact th,
+.desktop-table.table-font-compact th {
+  font-size: 10px !important;
+  padding: 6px 10px !important;
+}
+
+.table-font-compact td,
+.table-font-compact .portal-table td,
+.table-font-compact .desktop-table td,
+.portal-table.table-font-compact td,
+.desktop-table.table-font-compact td {
+  font-size: 11px !important;
+  padding: 6px 10px !important;
+}
+
+.table-font-compact code,
+.table-font-compact .badge-tag,
+.table-font-compact button {
+  font-size: 10.5px !important;
+}
+
+.table-font-medium,
+.table-font-medium .portal-table,
+.table-font-medium .desktop-table,
+.table-font-medium table,
+.portal-table.table-font-medium,
+.desktop-table.table-font-medium {
+  font-size: 12px !important;
+}
+
+.table-font-medium th,
+.table-font-medium .portal-table th,
+.table-font-medium .desktop-table th,
+.portal-table.table-font-medium th,
+.desktop-table.table-font-medium th {
+  font-size: 10.5px !important;
+  padding: 8px 12px !important;
+}
+
+.table-font-medium td,
+.table-font-medium .portal-table td,
+.table-font-medium .desktop-table td,
+.portal-table.table-font-medium td,
+.desktop-table.table-font-medium td {
+  font-size: 12px !important;
+  padding: 8px 12px !important;
+}
+
+.table-font-large,
+.table-font-large .portal-table,
+.table-font-large .desktop-table,
+.table-font-large table,
+.portal-table.table-font-large,
+.desktop-table.table-font-large {
+  font-size: 13px !important;
+}
+
+.table-font-large th,
+.table-font-large .portal-table th,
+.table-font-large .desktop-table th,
+.portal-table.table-font-large th,
+.desktop-table.table-font-large th {
+  font-size: 11px !important;
+  padding: 10px 14px !important;
+}
+
+.table-font-large td,
+.table-font-large .portal-table td,
+.table-font-large .desktop-table td,
+.portal-table.table-font-large td,
+.desktop-table.table-font-large td {
+  font-size: 13px !important;
+  padding: 10px 14px !important;
+}
+
+/* ==========================================================================
+   TABLE ACTION DROPDOWN MENU STYLES
+   ========================================================================== */
+.table-action-menu-wrap {
+  position: relative;
+  display: inline-block;
+  user-select: none;
+}
+
+
+.table-action-menu-wrap.is-open {
+  z-index: 9999;
+}
+
+.btn-table-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  background: #f8fafc;
+  color: #334155;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 9px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.btn-table-menu-trigger:hover {
+  background: #f1f5f9;
+  border-color: #0284c7;
+  color: #0284c7;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(2, 132, 199, 0.1);
+}
+
+.btn-table-menu-trigger.active {
+  background: #e0f2fe;
+  border-color: #0284c7;
+  color: #0369a1;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+}
+
+.table-action-dropdown-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 230px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 8px;
+  z-index: 10000;
+  animation: tableMenuSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top right;
+}
+
+@keyframes tableMenuSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.table-action-header {
+  padding: 4px 8px 8px 8px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 6px;
+}
+
+.table-action-header-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table-action-section {
+  padding: 4px 0;
+}
+
+.table-action-section + .table-action-section {
+  border-top: 1px solid #f1f5f9;
+  margin-top: 6px;
+  padding-top: 8px;
+}
+
+.table-action-section-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #475569;
+  padding: 2px 8px 6px 8px;
+}
+
+.table-action-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  color: #1e293b;
+}
+
+.table-action-item:hover {
+  background: #f1f5f9;
+  color: #0284c7;
+}
+
+.table-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0284c7;
+}
+
+.table-action-text-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-action-name {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.table-action-desc {
+  font-size: 10.5px;
+  color: #94a3b8;
+}
+
+.table-action-font-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 0 4px;
+}
+
+.table-font-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid transparent;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.table-font-btn:hover {
+  background: #f1f5f9;
+  color: #0284c7;
+}
+
+.table-font-btn.selected {
+  background: #e0f2fe;
+  color: #0369a1;
+  font-weight: 700;
+  border-color: #bae6fd;
+}
+
+.table-font-check {
+  color: #0284c7;
+}
+
+.spin-animate {
+  animation: spinIcon 1s linear infinite;
+}
+
+@keyframes spinIcon {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Dark Mode Theme Support for TableActionMenu */
+html[data-theme="dark"] .btn-table-menu-trigger {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .btn-table-menu-trigger:hover {
+  background: #243248;
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+html[data-theme="dark"] .btn-table-menu-trigger.active {
+  background: #082f49;
+  border-color: #38bdf8;
+  color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.18);
+}
+
+html[data-theme="dark"] .table-action-dropdown-popover {
+  background: rgba(15, 23, 42, 0.97);
+  border-color: #334155;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55), 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+html[data-theme="dark"] .table-action-header {
+  border-bottom-color: #1e293b;
+}
+
+html[data-theme="dark"] .table-action-section + .table-action-section {
+  border-top-color: #1e293b;
+}
+
+html[data-theme="dark"] .table-action-section-title {
+  color: #94a3b8;
+}
+
+html[data-theme="dark"] .table-action-item {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .table-action-item:hover {
+  background: #1e293b;
+  color: #38bdf8;
+}
+
+html[data-theme="dark"] .table-action-icon {
+  color: #38bdf8;
+}
+
+html[data-theme="dark"] .table-font-btn {
+  color: #cbd5e1;
+}
+
+html[data-theme="dark"] .table-font-btn:hover {
+  background: #1e293b;
+  color: #38bdf8;
+}
+
+html[data-theme="dark"] .table-font-btn.selected {
+  background: #082f49;
+  color: #38bdf8;
+  border-color: #0284c7;
+}
+
+html[data-theme="dark"] .table-font-check {
+  color: #38bdf8;
+}
+
+/* ==========================================================================
+   RESPONSIVE TABLE & ACTION MENU MEDIA QUERIES
+   ========================================================================== */
+@media (max-width: 768px) {
+  .panel-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+  }
+
+  .panel-header > div:last-child,
+  .panel-header > .table-action-menu-wrap,
+  .panel-header > .btn-blade-action {
+    align-self: flex-start !important;
+  }
+
+  .btn-table-menu-trigger {
+    padding: 5px 9px !important;
+    font-size: 11.5px !important;
+  }
+
+  .btn-table-menu-trigger .btn-table-menu-label {
+    font-size: 11px !important;
+  }
+
+  .table-action-dropdown-popover {
+    right: auto !important;
+    left: 0 !important;
+    min-width: 210px !important;
+    max-width: calc(100vw - 32px) !important;
+    transform-origin: top left !important;
+  }
+
+  .table-responsive,
+  .table-responsive-desktop {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-radius: 8px !important;
+  }
+
+  /* Prevent awkward line breaks in compact table headers on small screens */
+  .portal-table th,
+  .desktop-table th,
+  .portal-table td,
+  .desktop-table td {
+    white-space: nowrap !important;
+  }
+
+  .table-font-mini th,
+  .table-font-mini td {
+    padding: 4px 6px !important;
+    font-size: 9.5px !important;
+  }
+
+  .table-font-compact th,
+  .table-font-compact td {
+    padding: 5px 8px !important;
+    font-size: 10px !important;
+  }
+}
+
+/* ==========================================================================
+   ATURAN MUTLAK MODAL & POPUP: WAJIB TAMPIL PALING DEPAN (FULLSCREEN OVERLAY)
+   Menutupi semua elemen: sidebar, topbar, navbar, header, tabel, canvas, dsb.
+   ========================================================================== */
+.modal-backdrop-custom,
+.modal-backdrop,
+.theme-modal-backdrop,
+.font-modal-backdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  background: rgba(15, 23, 42, 0.78) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  z-index: 2147483647 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  overflow-y: auto !important;
+  margin: 0 !important;
+}
+
+.modal-box-custom,
+.modal-card-custom,
+.font-settings-modal,
+.theme-settings-modal {
+  position: relative !important;
+  z-index: 2147483647 !important;
+  max-height: 90vh !important;
+  max-height: 90dvh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  box-shadow: 0 30px 80px -15px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.15) !important;
+}
+
+.modal-box-custom > form,
+.modal-card-custom > form {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+}
+

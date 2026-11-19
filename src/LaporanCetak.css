@@ -1,0 +1,772 @@
+/* =========================================================
+   PUSAT LAPORAN & DOKUMEN RESMI (CARD CATALOG & PDF VIEWER)
+   ========================================================= */
+
+/* --- TAMPILAN 1: KATALOG KARTU LAPORAN --- */
+.gopay-report-container {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.laporan-portal-wrapper {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 8px 4px 30px 4px;
+  box-sizing: border-box;
+  animation: fadeInUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.laporan-intro-header {
+  position: relative;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+  overflow: visible;
+}
+
+.intro-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #0284c7;
+  background: #f0f9ff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.15);
+}
+
+.intro-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.4px;
+}
+
+.intro-desc {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.catalog-filter-bar {
+  position: relative;
+  z-index: 40;
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(226, 232, 240, 0.8);
+  flex-wrap: wrap;
+  overflow: visible;
+}
+
+.catalog-filter-item {
+  position: relative;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  flex: 1 1 auto;
+  min-width: 140px;
+}
+
+.catalog-filter-item.filter-pos-item {
+  flex: 2 1 240px;
+  min-width: 200px;
+}
+
+.catalog-filter-item label {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.catalog-filter-item select,
+.filter-date-input,
+.filter-pos-select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  font-size: 13.5px;
+  font-weight: 600;
+  background-color: #ffffff;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+}
+
+.catalog-filter-item select,
+.filter-pos-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 38px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230284c7' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 15px 15px;
+  cursor: pointer;
+}
+
+.catalog-filter-item select:hover,
+.filter-date-input:hover,
+.filter-pos-select:hover {
+  border-color: #93c5fd;
+  background-color: #f8fafc;
+}
+
+.catalog-filter-item select:focus,
+.filter-date-input:focus,
+.filter-pos-select:focus {
+  border-color: #0284c7;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12), 0 2px 6px rgba(2, 132, 199, 0.08);
+}
+
+.mode-toggle-group {
+  display: inline-flex;
+  width: 100%;
+  box-sizing: border-box;
+  background: #f1f5f9;
+  padding: 3px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.mode-toggle-btn {
+  flex: 1;
+  text-align: center;
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  padding: 6px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.mode-toggle-btn.active {
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+}
+
+/* Grid Kartu Laporan with Stagger Animations */
+.report-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.report-cards-grid > *:nth-child(1) { animation: fadeInUp 0.45s 0.08s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.report-cards-grid > *:nth-child(2) { animation: fadeInUp 0.45s 0.14s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.report-cards-grid > *:nth-child(3) { animation: fadeInUp 0.45s 0.20s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.report-cards-grid > *:nth-child(4) { animation: fadeInUp 0.45s 0.26s cubic-bezier(0.16, 1, 0.3, 1) both; }
+.report-cards-grid > *:nth-child(5) { animation: fadeInUp 0.45s 0.32s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+.report-catalog-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 22px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.04);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.report-catalog-card:hover {
+  transform: translateY(-6px);
+  border-color: #bae6fd;
+  box-shadow: 0 18px 36px rgba(2, 132, 199, 0.14);
+}
+
+.card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.card-icon-bubble {
+  width: 44px;
+  height: 44px;
+  background: #f0f9ff;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  background: #f1f5f9;
+  padding: 3px 9px;
+  border-radius: 12px;
+}
+
+.card-category-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0284c7;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.card-title {
+  font-size: 15.5px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+  line-height: 1.3;
+}
+
+.card-desc {
+  font-size: 12.5px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.card-action-bar {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.btn-open-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #0284c7;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.report-catalog-card:hover .btn-open-preview {
+  color: #0369a1;
+}
+
+/* --- TAMPILAN 2: HALAMAN DEDICATED VIEW PDF / DOKUMEN --- */
+.laporan-view-page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #0f172a;
+  z-index: 9999;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Floating Top App Bar */
+.pdf-viewer-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: #1e293b;
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #334155;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.35);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pdf-viewer-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-back-catalog {
+  background: #334155;
+  color: #f8fafc;
+  border: 1px solid #475569;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-back-catalog:hover {
+  background: #475569;
+  color: white;
+}
+
+.pdf-title-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.pdf-title-badge {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #7dd3fc;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pdf-main-heading {
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+
+.pdf-viewer-header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-print-action {
+  padding: 9px 18px;
+  background: #0284c7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+  transition: all 0.2s;
+}
+
+.btn-print-action:hover {
+  background: #0369a1;
+  transform: translateY(-1px);
+}
+
+/* =========================================================
+   A4 SHEET PAPER PREVIEW
+   ========================================================= */
+.print-paper-sheet {
+  width: 100%;
+  max-width: 900px;
+  background: white;
+  padding: 36px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  color: #000000;
+  box-sizing: border-box;
+}
+
+/* Kop Surat Pesantren */
+.pesantren-kop-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 8px;
+}
+
+.kop-logo-box {
+  color: #0284c7;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kop-text-center {
+  flex: 1;
+  text-align: center;
+}
+
+.kop-title-main {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #0c4a6e;
+  margin: 0;
+}
+
+.kop-title-sub {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 2px 0;
+}
+
+.kop-address {
+  font-size: 11px;
+  color: #475569;
+  margin-top: 4px;
+}
+
+.kop-divider-double {
+  border-top: 3px double #0f172a;
+  margin: 12px 0 20px 0;
+}
+
+/* Report Title */
+.report-title-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.report-name-header {
+  font-size: 15px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #0f172a;
+}
+
+.report-period-sub {
+  font-size: 12px;
+  color: #475569;
+  margin-top: 3px;
+  font-style: italic;
+}
+
+/* Print Status Banner */
+.print-recon-status {
+  padding: 8px 14px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 12px;
+  text-align: center;
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+/* 2 Columns Table */
+.print-2col-tables {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.print-col-heading {
+  font-size: 12.5px;
+  font-weight: 800;
+  border-bottom: 1.5px solid #000;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+/* Responsive Table Wrapper for Mobile Scrolling */
+.print-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 16px;
+}
+
+/* Print Clean Table */
+.print-table {
+  width: 100%;
+  min-width: 500px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.print-table th {
+  border: 1px solid #000;
+  padding: 8px 10px;
+  background: #f1f5f9;
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.print-table td {
+  border: 1px solid #cbd5e1;
+  padding: 7px 10px;
+}
+
+.print-row-total {
+  font-weight: 800;
+  background: #f8fafc;
+}
+
+.print-row-total td {
+  border-top: 2px solid #000;
+  border-bottom: 2px solid #000;
+}
+
+/* Signatures */
+.print-signatures-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  text-align: center;
+  margin-top: 32px;
+  font-size: 12px;
+  gap: 16px;
+}
+
+.sign-role, .sign-date {
+  color: #000;
+}
+
+.sign-spacer {
+  height: 50px;
+}
+
+.sign-name {
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.sign-title {
+  font-size: 11px;
+  color: #475569;
+}
+
+/* =========================================================
+   MOBILE RESPONSIVE SCREEN ADJUSTMENTS (@media screen)
+   ========================================================= */
+@media (max-width: 768px) {
+  .print-control-card {
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+  }
+
+  .print-control-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .btn-print-action {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .report-type-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .report-type-btn {
+    padding: 10px 12px;
+    font-size: 12.5px;
+  }
+
+  .filter-panel-row,
+  .report-filters-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .filter-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .filter-item select,
+  .filter-item input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .print-paper-sheet {
+    padding: 16px 12px;
+    border-radius: 8px;
+  }
+
+  .laporan-intro-header {
+    padding: 18px 16px !important;
+    border-radius: 18px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .intro-title {
+    font-size: 18px !important;
+  }
+
+  .intro-desc {
+    font-size: 12px !important;
+  }
+
+  .catalog-filter-bar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+
+  .catalog-filter-item,
+  .catalog-filter-item.filter-pos-item {
+    width: 100% !important;
+    flex: 1 1 100% !important;
+    min-width: 100% !important;
+  }
+
+  .catalog-filter-item select,
+  .filter-date-input,
+  .filter-pos-select {
+    width: 100% !important;
+  }
+
+  .report-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .report-catalog-card {
+    padding: 16px !important;
+    border-radius: 18px !important;
+  }
+
+  .card-title {
+    font-size: 14.5px !important;
+  }
+
+  .card-desc {
+    font-size: 11.5px !important;
+  }
+
+  .btn-open-preview {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+  }
+
+  .pesantren-kop-header {
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .kop-title-main {
+    font-size: 15px;
+  }
+
+  .kop-title-sub {
+    font-size: 12px;
+  }
+
+  .kop-address {
+    font-size: 10px;
+  }
+
+  .print-2col-tables {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .print-table {
+    min-width: 480px;
+    font-size: 11.5px;
+  }
+
+  .print-signatures-section {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 24px;
+  }
+
+  .sign-spacer {
+    height: 35px;
+  }
+}
+
+/* =========================================================
+   NATIVE PRINT MEDIA QUERY (@media print)
+   ========================================================= */
+@media print {
+  /* Sembunyikan sidebar, navbar, control panel, dan tombol */
+  .no-print, 
+  .desktop-sidebar, 
+  .desktop-topbar, 
+  .mobile-header, 
+  .mobile-bottom-nav,
+  .mobile-header-actions {
+    display: none !important;
+  }
+
+  body, html, .desktop-layout, .desktop-main, .desktop-content, .mobile-app-shell, .mobile-body {
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .laporan-container {
+    padding: 0 !important;
+    width: 100% !important;
+  }
+
+  .print-paper-sheet {
+    max-width: 100% !important;
+    width: 100% !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 10mm 15mm !important;
+    page-break-after: always;
+  }
+
+  .print-table-wrapper {
+    overflow: visible !important;
+  }
+
+  .print-table {
+    min-width: 100% !important;
+  }
+
+  .print-table th {
+    background-color: #f1f5f9 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .print-row-total {
+    background-color: #f8fafc !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

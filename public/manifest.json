@@ -1,0 +1,16 @@
+{
+  "short_name": "Donasi Latee",
+  "name": "Sistem Donasi & Keuangan PP Annuqayah Latee",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "type": "image/jpeg",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0284c7",
+  "theme_color": "#0284c7",
+  "display": "standalone",
+  "orientation": "portrait"
+}
