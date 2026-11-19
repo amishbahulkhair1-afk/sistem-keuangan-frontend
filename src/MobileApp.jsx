@@ -50,7 +50,7 @@ import {
 import { formatPosNameShort, POS_ABBREVIATIONS, compressImage } from "./utils/formatters";
 import DynamicBackgroundCanvas from "./components/common/DynamicBackgroundCanvas";
 
-const API_BASE = "/api";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
 
 export default function MobileApp({
   user,

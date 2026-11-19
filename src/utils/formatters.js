@@ -1,4 +1,4 @@
-export const API_BASE = "/api";
+export const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
 
 export const formatRupiah = (val) =>
   new Intl.NumberFormat("id-ID", {

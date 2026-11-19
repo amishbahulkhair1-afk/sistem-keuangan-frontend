@@ -7,7 +7,7 @@ import { getSavedBgTheme, saveBgTheme } from "./components/common/DynamicBackgro
 import logoImg from "./assets/logo.jpg";
 import "./App.css";
 
-const API_BASE = "/api";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
