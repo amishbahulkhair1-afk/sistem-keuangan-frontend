@@ -84,7 +84,7 @@ export default function Sidebar({
           <>
             <div className="nav-group-title">Menu Donatur</div>
             <button
-              className={`nav-link ${activeMenu === "donatur_dashboard" ? "active" : ""}`}
+              className={`nav-link ${activeMenu === "donatur_dashboard" ? "active" : ""}`} aria-current={activeMenu === "donatur_dashboard" ? "page" : undefined}
               onClick={() => {
                 setActiveMenu("donatur_dashboard");
                 setIsSidebarOpen(false);
@@ -94,7 +94,7 @@ export default function Sidebar({
               <span>Dashboard Donatur</span>
             </button>
             <button
-              className={`nav-link ${activeMenu === "donatur_pos_view" ? "active" : ""}`}
+              className={`nav-link ${activeMenu === "donatur_pos_view" ? "active" : ""}`} aria-current={activeMenu === "donatur_pos_view" ? "page" : undefined}
               onClick={() => {
                 setActiveMenu("donatur_pos_view");
                 setIsSidebarOpen(false);
@@ -110,29 +110,29 @@ export default function Sidebar({
             {!isPenjab && (
               <>
                 <div className="nav-group-title">Menu Utama</div>
-                <button className={`nav-link ${activeMenu === "dashboard" ? "active" : ""}`} onClick={() => { setActiveMenu("dashboard"); setIsSidebarOpen(false); }}>
+                <button className={`nav-link ${activeMenu === "dashboard" ? "active" : ""}`} aria-current={activeMenu === "dashboard" ? "page" : undefined} onClick={() => { setActiveMenu("dashboard"); setIsSidebarOpen(false); }}>
                   <IconDashboard size={17} />
                   <span>Dashboard Ringkasan</span>
                 </button>
-                <button className={`nav-link ${activeMenu === "donatur_pos_view" ? "active" : ""}`} onClick={() => { setActiveMenu("donatur_pos_view"); setIsSidebarOpen(false); }}>
+                <button className={`nav-link ${activeMenu === "donatur_pos_view" ? "active" : ""}`} aria-current={activeMenu === "donatur_pos_view" ? "page" : undefined} onClick={() => { setActiveMenu("donatur_pos_view"); setIsSidebarOpen(false); }}>
                   <IconFolderPos size={17} />
                   <span>Katalog Pos & Donatur</span>
                 </button>
-                <button className={`nav-link ${activeMenu === "transaksi_list" ? "active" : ""}`} onClick={() => { setActiveMenu("transaksi_list"); setIsSidebarOpen(false); }}>
+                <button className={`nav-link ${activeMenu === "transaksi_list" ? "active" : ""}`} aria-current={activeMenu === "transaksi_list" ? "page" : undefined} onClick={() => { setActiveMenu("transaksi_list"); setIsSidebarOpen(false); }}>
                   <IconTable size={17} />
                   <span>Jurnal Transaksi</span>
                 </button>
 
                 <div className="nav-group-title">Laporan & Pembukuan Konsolidasi</div>
-                <button className={`nav-link ${activeMenu === "buku_bantu" ? "active" : ""}`} onClick={() => { setActiveMenu("buku_bantu"); setIsSidebarOpen(false); }}>
+                <button className={`nav-link ${activeMenu === "buku_bantu" ? "active" : ""}`} aria-current={activeMenu === "buku_bantu" ? "page" : undefined} onClick={() => { setActiveMenu("buku_bantu"); setIsSidebarOpen(false); }}>
                   <IconBook size={17} />
                   <span>Buku Pembantu Saldo</span>
                 </button>
-                <button className={`nav-link ${activeMenu === "neraca" ? "active" : ""}`} onClick={() => { setActiveMenu("neraca"); setIsSidebarOpen(false); }}>
+                <button className={`nav-link ${activeMenu === "neraca" ? "active" : ""}`} aria-current={activeMenu === "neraca" ? "page" : undefined} onClick={() => { setActiveMenu("neraca"); setIsSidebarOpen(false); }}>
                   <IconScale size={17} />
                   <span>Neraca Konsolidasi</span>
                 </button>
-                <button className={`nav-link ${activeMenu === "cetak_laporan" ? "active" : ""}`} onClick={() => { setActiveMenu("cetak_laporan"); setIsSidebarOpen(false); }}>
+                <button className={`nav-link ${activeMenu === "cetak_laporan" ? "active" : ""}`} aria-current={activeMenu === "cetak_laporan" ? "page" : undefined} onClick={() => { setActiveMenu("cetak_laporan"); setIsSidebarOpen(false); }}>
                   <IconPrinter size={17} />
                   <span>Pusat Cetak Dokumen</span>
                 </button>
@@ -143,16 +143,16 @@ export default function Sidebar({
             {!isPenjab && canInputMoney && (
               <>
                 <div className="nav-group-title">Entri Data</div>
-                <button className={`nav-link ${activeMenu === "transaksi_form" ? "active" : ""}`} onClick={() => { setActiveMenu("transaksi_form"); setIsSidebarOpen(false); }}>
+                <button className={`nav-link ${activeMenu === "transaksi_form" ? "active" : ""}`} aria-current={activeMenu === "transaksi_form" ? "page" : undefined} onClick={() => { setActiveMenu("transaksi_form"); setIsSidebarOpen(false); }}>
                   <IconPlusCircle size={17} />
                   <span>Input Kas & Bank</span>
                 </button>
-                <button className={`nav-link ${activeMenu === "barang" ? "active" : ""}`} onClick={() => { setActiveMenu("barang"); setIsSidebarOpen(false); }}>
+                <button className={`nav-link ${activeMenu === "barang" ? "active" : ""}`} aria-current={activeMenu === "barang" ? "page" : undefined} onClick={() => { setActiveMenu("barang"); setIsSidebarOpen(false); }}>
                   <IconPackage size={17} />
                   <span>Donasi Barang Fisik</span>
                 </button>
                 {isAdmin && (
-                  <button className={`nav-link ${activeMenu === "import_qris" ? "active" : ""}`} onClick={() => { setActiveMenu("import_qris"); setIsSidebarOpen(false); }}>
+                  <button className={`nav-link ${activeMenu === "import_qris" ? "active" : ""}`} aria-current={activeMenu === "import_qris" ? "page" : undefined} onClick={() => { setActiveMenu("import_qris"); setIsSidebarOpen(false); }}>
                     <IconDownload size={17} />
                     <span>Import QRIS Excel</span>
                   </button>
@@ -195,19 +195,19 @@ export default function Sidebar({
               </div>
             </div>
 
-            <button className={`nav-link ${activeMenu === "pos_transaksi" ? "active" : ""}`} onClick={() => { setActiveMenu("pos_transaksi"); setIsSidebarOpen(false); }}>
+            <button className={`nav-link ${activeMenu === "pos_transaksi" ? "active" : ""}`} aria-current={activeMenu === "pos_transaksi" ? "page" : undefined} onClick={() => { setActiveMenu("pos_transaksi"); setIsSidebarOpen(false); }}>
               <IconWallet size={17} />
               <span>Kas & Belanja Pos</span>
             </button>
-            <button className={`nav-link ${activeMenu === "hutang_piutang" ? "active" : ""}`} onClick={() => { setActiveMenu("hutang_piutang"); setIsSidebarOpen(false); }}>
+            <button className={`nav-link ${activeMenu === "hutang_piutang" ? "active" : ""}`} aria-current={activeMenu === "hutang_piutang" ? "page" : undefined} onClick={() => { setActiveMenu("hutang_piutang"); setIsSidebarOpen(false); }}>
               <IconLayers size={17} />
               <span>Hutang & Piutang Pos</span>
             </button>
-            <button className={`nav-link ${activeMenu === "material_pemakaian" ? "active" : ""}`} onClick={() => { setActiveMenu("material_pemakaian"); setIsSidebarOpen(false); }}>
+            <button className={`nav-link ${activeMenu === "material_pemakaian" ? "active" : ""}`} aria-current={activeMenu === "material_pemakaian" ? "page" : undefined} onClick={() => { setActiveMenu("material_pemakaian"); setIsSidebarOpen(false); }}>
               <IconTruck size={17} />
               <span>Material & Pemakaian</span>
             </button>
-            <button className={`nav-link ${activeMenu === "neraca_pos" ? "active" : ""}`} onClick={() => { setActiveMenu("neraca_pos"); setIsSidebarOpen(false); }}>
+            <button className={`nav-link ${activeMenu === "neraca_pos" ? "active" : ""}`} aria-current={activeMenu === "neraca_pos" ? "page" : undefined} onClick={() => { setActiveMenu("neraca_pos"); setIsSidebarOpen(false); }}>
               <IconScale size={17} />
               <span>Neraca Dinamis Pos</span>
             </button>
@@ -216,19 +216,19 @@ export default function Sidebar({
             {!isPenjab && canManageMaster && (
               <>
                 <div className="nav-group-title">Master & Database</div>
-                <button className={`nav-link ${activeMenu === "master_donatur" ? "active" : ""}`} onClick={() => { setActiveMenu("master_donatur"); if (typeof fetchDonors === "function") fetchDonors(); setIsSidebarOpen(false); }}>
+                <button className={`nav-link ${activeMenu === "master_donatur" ? "active" : ""}`} aria-current={activeMenu === "master_donatur" ? "page" : undefined} onClick={() => { setActiveMenu("master_donatur"); if (typeof fetchDonors === "function") fetchDonors(); setIsSidebarOpen(false); }}>
                   <IconUsers size={17} />
                   <span>Database Donatur ({donorsCount || 0})</span>
                 </button>
-                <button className={`nav-link ${activeMenu === "master_pos" ? "active" : ""}`} onClick={() => { setActiveMenu("master_pos"); setIsSidebarOpen(false); }}>
+                <button className={`nav-link ${activeMenu === "master_pos" ? "active" : ""}`} aria-current={activeMenu === "master_pos" ? "page" : undefined} onClick={() => { setActiveMenu("master_pos"); setIsSidebarOpen(false); }}>
                   <IconSettings size={17} />
                   <span>Pos Program ({categories.length})</span>
                 </button>
-                <button className={`nav-link ${activeMenu === "master_rekening" ? "active" : ""}`} onClick={() => { setActiveMenu("master_rekening"); setIsSidebarOpen(false); }}>
+                <button className={`nav-link ${activeMenu === "master_rekening" ? "active" : ""}`} aria-current={activeMenu === "master_rekening" ? "page" : undefined} onClick={() => { setActiveMenu("master_rekening"); setIsSidebarOpen(false); }}>
                   <IconBank size={17} />
                   <span>Rekening Kas & Bank</span>
                 </button>
-                <button className={`nav-link ${activeMenu === "master_users" ? "active" : ""}`} onClick={() => { setActiveMenu("master_users"); setIsSidebarOpen(false); }}>
+                <button className={`nav-link ${activeMenu === "master_users" ? "active" : ""}`} aria-current={activeMenu === "master_users" ? "page" : undefined} onClick={() => { setActiveMenu("master_users"); setIsSidebarOpen(false); }}>
                   <IconBriefcase size={17} />
                   <span>Petugas & Penjab Pos</span>
                 </button>

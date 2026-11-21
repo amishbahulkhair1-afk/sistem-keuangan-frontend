@@ -23,10 +23,28 @@ export default function CustomDropdown({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const dropdownRef = useRef(null);
+  const triggerRef = useRef(null);
   const searchInputRef = useRef(null);
 
   const selectedOption = options.find((opt) => String(opt.value) === String(value));
+
+  const filteredOptions = searchable && searchQuery.trim() !== ""
+    ? options.filter((opt) => {
+        const text = typeof opt.label === "string" ? opt.label : String(opt.value);
+        return text.toLowerCase().includes(searchQuery.toLowerCase());
+      })
+    : options;
+
+  useEffect(() => {
+    if (isOpen) {
+      const idx = filteredOptions.findIndex((opt) => String(opt.value) === String(value));
+      setHighlightedIndex(idx >= 0 ? idx : 0);
+    } else {
+      setHighlightedIndex(-1);
+    }
+  }, [isOpen, value, filteredOptions.length]);
 
   useEffect(() => {
     const handleOutsideClick = (e) => {
@@ -62,21 +80,48 @@ export default function CustomDropdown({
   };
 
   const handleSelect = (opt) => {
-    if (opt.disabled) return;
+    if (!opt || opt.disabled) return;
     if (onChange) {
       // Pass both event-like shape and value for seamless compatibility
       onChange({ target: { value: opt.value } });
     }
     setIsOpen(false);
     setSearchQuery("");
+    triggerRef.current?.focus();
   };
 
-  const filteredOptions = searchable && searchQuery.trim() !== ""
-    ? options.filter((opt) => {
-        const text = typeof opt.label === "string" ? opt.label : String(opt.value);
-        return text.toLowerCase().includes(searchQuery.toLowerCase());
-      })
-    : options;
+  const handleKeyDown = (e) => {
+    if (disabled) return;
+
+    if (!isOpen) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        setIsOpen(true);
+      }
+      return;
+    }
+
+    if (e.key === "Escape") {
+      e.preventDefault();
+      setIsOpen(false);
+      setSearchQuery("");
+      triggerRef.current?.focus();
+      return;
+    }
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev < filteredOptions.length - 1 ? prev + 1 : 0));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : filteredOptions.length - 1));
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (highlightedIndex >= 0 && highlightedIndex < filteredOptions.length) {
+        handleSelect(filteredOptions[highlightedIndex]);
+      }
+    }
+  };
 
   return (
     <div
@@ -103,9 +148,11 @@ export default function CustomDropdown({
 
       {/* Trigger Button */}
       <button
+        ref={triggerRef}
         type="button"
         className="modern-dropdown-trigger"
         onClick={handleToggle}
+        onKeyDown={handleKeyDown}
         disabled={disabled}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
@@ -133,7 +180,10 @@ export default function CustomDropdown({
 
       {/* Dropdown Menu Popover */}
       {isOpen && (
-        <div className={`modern-dropdown-menu ${dropUp ? "direction-up" : "direction-down"}`}>
+        <div
+          className={`modern-dropdown-menu ${dropUp ? "direction-up" : "direction-down"}`}
+          onKeyDown={handleKeyDown}
+        >
           {searchable && (
             <div className="modern-dropdown-search-wrap">
               <input
@@ -152,11 +202,13 @@ export default function CustomDropdown({
             {filteredOptions.length > 0 ? (
               filteredOptions.map((opt, idx) => {
                 const isSelected = String(opt.value) === String(value);
+                const isHighlighted = idx === highlightedIndex;
                 return (
                   <div
                     key={opt.key || opt.value || idx}
-                    className={`modern-dropdown-item ${isSelected ? "is-selected" : ""} ${opt.disabled ? "is-disabled" : ""}`}
+                    className={`modern-dropdown-item ${isSelected ? "is-selected" : ""} ${isHighlighted ? "is-highlighted" : ""} ${opt.disabled ? "is-disabled" : ""}`}
                     onClick={() => handleSelect(opt)}
+                    onMouseEnter={() => setHighlightedIndex(idx)}
                     role="option"
                     aria-selected={isSelected}
                   >

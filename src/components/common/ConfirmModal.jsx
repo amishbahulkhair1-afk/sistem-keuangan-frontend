@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { IconTrash, IconX } from "../../Icons";
 
@@ -19,6 +19,17 @@ export default function ConfirmModal({
   isLoading = false,
   details = [] // Array of { label: string, value: any, isHighlight?: boolean }
 }) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && !isLoading) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, isLoading, onClose]);
+
   if (!isOpen) return null;
 
   const getConfirmStyle = () => {
@@ -62,11 +73,14 @@ export default function ConfirmModal({
     <div className="modal-backdrop-custom" onClick={() => !isLoading && onClose()}>
       <div
         className="modal-box-custom"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="confirm-modal-title"
         style={{ maxWidth: "460px" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="modal-header-custom" style={getHeaderStyle()}>
-          <h3 style={{ display: "flex", alignItems: "center", gap: "8px", color: "inherit" }}>
+          <h3 id="confirm-modal-title" style={{ display: "flex", alignItems: "center", gap: "8px", color: "inherit" }}>
             <IconTrash size={20} color="currentColor" /> {title}
           </h3>
           <button
@@ -75,6 +89,7 @@ export default function ConfirmModal({
             onClick={() => !isLoading && onClose()}
             disabled={isLoading}
             title="Tutup"
+            aria-label="Tutup dialog konfirmasi"
           >
             <IconX size={18} />
           </button>

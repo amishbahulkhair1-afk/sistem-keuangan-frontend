@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import {
   IconPalette,
@@ -22,6 +22,17 @@ export default function ThemeModal({
   theme = "light",
   onToggleTheme
 }) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const getThemeIcon = (iconName) => {
@@ -47,6 +58,9 @@ export default function ThemeModal({
     <div className="modal-backdrop-custom" onClick={onClose}>
       <div
         className="modal-card-custom theme-settings-modal font-settings-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="theme-modal-title"
         style={{
           maxWidth: "560px",
           width: "100%",
@@ -65,7 +79,7 @@ export default function ThemeModal({
               <IconPalette size={20} color="#059669" />
             </div>
             <div>
-              <h3 style={{ fontSize: "16px", fontWeight: "800", color: "#0f172a", margin: 0 }}>
+              <h3 id="theme-modal-title" style={{ fontSize: "16px", fontWeight: "800", color: "#0f172a", margin: 0 }}>
                 Pengaturan Tema & Latar Belakang
               </h3>
               <p style={{ fontSize: "12px", color: "#64748b", margin: "2px 0 0 0" }}>
@@ -73,7 +87,7 @@ export default function ThemeModal({
               </p>
             </div>
           </div>
-          <button className="btn-close-modal" onClick={onClose} title="Tutup">
+          <button className="btn-close-modal" onClick={onClose} title="Tutup" aria-label="Tutup pengaturan tema">
             <IconX size={20} />
           </button>
         </div>

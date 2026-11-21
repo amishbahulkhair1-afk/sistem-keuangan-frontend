@@ -15,31 +15,76 @@ html, body, #root {
   padding: 0;
 }
 
+/* Accessibility: Focus indicators (WCAG 2.4.11 / 2.4.12) */
+:focus-visible {
+  outline: 2px solid var(--primary, #0284c7) !important;
+  outline-offset: 2px !important;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[role="combobox"]:focus-visible,
+[role="radio"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--primary, #0284c7) !important;
+  outline-offset: 2px !important;
+}
+
+html[data-theme="dark"] :focus-visible,
+html[data-theme="dark"] button:focus-visible,
+html[data-theme="dark"] a:focus-visible,
+html[data-theme="dark"] input:focus-visible,
+html[data-theme="dark"] select:focus-visible,
+html[data-theme="dark"] textarea:focus-visible,
+html[data-theme="dark"] [role="button"]:focus-visible,
+html[data-theme="dark"] [role="combobox"]:focus-visible,
+html[data-theme="dark"] [role="radio"]:focus-visible,
+html[data-theme="dark"] [tabindex]:focus-visible {
+  outline: 2px solid #38bdf8 !important;
+  outline-offset: 2px !important;
+}
+
+/* Accessibility: Respect Reduced Motion Preferences (WCAG 2.3.3) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 /* =========================================================
    PENGATURAN UKURAN FONT DINAMIS MENYELURUH (MAIN CONTENT, CARDS, TABLES, FORMS)
    Menerapkan CSS scale multipliers pada seluruh elemen teks di main content
    ========================================================= */
 
-/* 1. COMPACT (50% / ~2x Lebih Ringkas) */
+/* 1. COMPACT (90% / Hemat Ruang & Tetap Nyaman Dibaca) */
 html[data-font-size="compact"] {
-  font-size: 50% !important;
+  font-size: 90% !important;
 }
 
 html[data-font-size="compact"] .desktop-content,
 html[data-font-size="compact"] .mobile-body {
-  font-size: 11px !important;
+  font-size: 13px !important;
 }
 
 html[data-font-size="compact"] h1,
 html[data-font-size="compact"] .blade-main-title {
-  font-size: 16px !important;
+  font-size: 20px !important;
 }
 
 html[data-font-size="compact"] h2,
 html[data-font-size="compact"] .gopay-header-greeting,
 html[data-font-size="compact"] .topbar-title h2,
 html[data-font-size="compact"] .pos-detail-name {
-  font-size: 13.5px !important;
+  font-size: 17px !important;
 }
 
 html[data-font-size="compact"] h3,
@@ -47,7 +92,7 @@ html[data-font-size="compact"] h4,
 html[data-font-size="compact"] .gopay-section-title,
 html[data-font-size="compact"] .blade-card-title,
 html[data-font-size="compact"] .panel-header h3 {
-  font-size: 11.5px !important;
+  font-size: 14px !important;
 }
 
 html[data-font-size="compact"] .blade-card-value,
@@ -55,7 +100,7 @@ html[data-font-size="compact"] .stat-value,
 html[data-font-size="compact"] .gopay-balance-amount,
 html[data-font-size="compact"] .gopay-wallet-balance-num,
 html[data-font-size="compact"] .total-count-badge {
-  font-size: 14px !important;
+  font-size: 18px !important;
 }
 
 html[data-font-size="compact"] .desktop-table td,
@@ -77,7 +122,7 @@ html[data-font-size="compact"] select,
 html[data-font-size="compact"] input,
 html[data-font-size="compact"] textarea,
 html[data-font-size="compact"] .dropdown-menu-item {
-  font-size: 10px !important;
+  font-size: 12.5px !important;
 }
 
 html[data-font-size="compact"] .blade-sub-desc,
@@ -90,29 +135,29 @@ html[data-font-size="compact"] .badge,
 html[data-font-size="compact"] .badge-tag,
 html[data-font-size="compact"] .pos-shortcut-hint,
 html[data-font-size="compact"] small {
-  font-size: 8.5px !important;
+  font-size: 11.5px !important;
 }
 
-/* 2. MEDIUM (75% / Proporsional) */
+/* 2. MEDIUM (95% / Proporsional Seimbang) */
 html[data-font-size="medium"] {
-  font-size: 75% !important;
+  font-size: 95% !important;
 }
 
 html[data-font-size="medium"] .desktop-content,
 html[data-font-size="medium"] .mobile-body {
-  font-size: 13px !important;
+  font-size: 14px !important;
 }
 
 html[data-font-size="medium"] h1,
 html[data-font-size="medium"] .blade-main-title {
-  font-size: 20px !important;
+  font-size: 22px !important;
 }
 
 html[data-font-size="medium"] h2,
 html[data-font-size="medium"] .gopay-header-greeting,
 html[data-font-size="medium"] .topbar-title h2,
 html[data-font-size="medium"] .pos-detail-name {
-  font-size: 16px !important;
+  font-size: 18px !important;
 }
 
 html[data-font-size="medium"] h3,
@@ -120,14 +165,14 @@ html[data-font-size="medium"] h4,
 html[data-font-size="medium"] .gopay-section-title,
 html[data-font-size="medium"] .blade-card-title,
 html[data-font-size="medium"] .panel-header h3 {
-  font-size: 13.5px !important;
+  font-size: 15px !important;
 }
 
 html[data-font-size="medium"] .blade-card-value,
 html[data-font-size="medium"] .stat-value,
 html[data-font-size="medium"] .gopay-balance-amount,
 html[data-font-size="medium"] .gopay-wallet-balance-num {
-  font-size: 18px !important;
+  font-size: 20px !important;
 }
 
 html[data-font-size="medium"] .desktop-table td,
@@ -144,7 +189,7 @@ html[data-font-size="medium"] button:not(.btn-close-modal),
 html[data-font-size="medium"] select,
 html[data-font-size="medium"] input,
 html[data-font-size="medium"] textarea {
-  font-size: 12px !important;
+  font-size: 13.5px !important;
 }
 
 html[data-font-size="medium"] .blade-sub-desc,
@@ -154,7 +199,7 @@ html[data-font-size="medium"] .text-muted,
 html[data-font-size="medium"] .topbar-title p,
 html[data-font-size="medium"] .badge,
 html[data-font-size="medium"] .badge-tag {
-  font-size: 10.5px !important;
+  font-size: 12px !important;
 }
 
 /* 3. NORMAL (Standar 100% / Bawaan Browser) */
@@ -412,7 +457,7 @@ html[data-theme="dark"] .brand-name {
 }
 
 html[data-theme="dark"] .nav-group-title {
-  color: #64748b !important;
+  color: #94a3b8 !important;
 }
 
 html[data-theme="dark"] .nav-link {
@@ -988,7 +1033,7 @@ html[data-theme="dark"] .gopay-feed-meta {
 }
 
 html[data-theme="dark"] .gopay-feed-date {
-  color: #64748b !important;
+  color: #94a3b8 !important;
 }
 
 html[data-theme="dark"] .gopay-feed-avatar.income {
@@ -1159,7 +1204,7 @@ html[data-theme="dark"] .center-btn-inner {
 }
 
 html[data-theme="dark"] .gopay-dock-item {
-  color: #64748b !important;
+  color: #94a3b8 !important;
 }
 
 html[data-theme="dark"] .gopay-dock-item:hover {
@@ -1334,7 +1379,7 @@ html[data-theme="dark"] .nav-link {
 }
 
 html[data-theme="dark"] .nav-link svg {
-  stroke: #64748b !important;
+  stroke: #94a3b8 !important;
 }
 
 html[data-theme="dark"] .nav-link:hover {
@@ -2989,7 +3034,8 @@ html[data-theme="dark"][data-bg-theme="islamic"] .gopay-section-sub {
   user-select: none;
 }
 
-.modern-dropdown-item:hover {
+.modern-dropdown-item:hover,
+.modern-dropdown-item.is-highlighted {
   background: #f0f9ff;
   color: #0284c7;
   transform: translateX(3px);
@@ -3071,7 +3117,7 @@ html[data-theme="dark"] .modern-custom-dropdown.is-open .modern-dropdown-trigger
 }
 
 html[data-theme="dark"] .modern-dropdown-placeholder {
-  color: #64748b;
+  color: #94a3b8;
 }
 
 html[data-theme="dark"] .modern-dropdown-arrow {
@@ -3104,7 +3150,8 @@ html[data-theme="dark"] .modern-dropdown-item {
   color: #cbd5e1;
 }
 
-html[data-theme="dark"] .modern-dropdown-item:hover {
+html[data-theme="dark"] .modern-dropdown-item:hover,
+html[data-theme="dark"] .modern-dropdown-item.is-highlighted {
   background: #1e293b;
   color: #38bdf8;
 }
@@ -3478,7 +3525,7 @@ html[data-theme="dark"] .modern-datepicker-icon-wrap {
 }
 
 html[data-theme="dark"] .modern-datepicker-display.is-placeholder {
-  color: #64748b;
+  color: #94a3b8;
 }
 
 html[data-theme="dark"] .modern-datepicker-clear {
@@ -3534,7 +3581,7 @@ html[data-theme="dark"] .nav-title-btn.active {
 }
 
 html[data-theme="dark"] .weekday-label {
-  color: #64748b;
+  color: #94a3b8;
 }
 
 html[data-theme="dark"] .day-cell {
@@ -3547,7 +3594,7 @@ html[data-theme="dark"] .day-cell:hover:not(.selected) {
 }
 
 html[data-theme="dark"] .day-cell.other-month {
-  color: #475569;
+  color: #64748b;
 }
 
 html[data-theme="dark"] .day-cell.today {

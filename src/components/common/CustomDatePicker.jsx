@@ -96,7 +96,7 @@ export default function CustomDatePicker({
     }
   }, [isOpen, isMonthOnly]);
 
-  // Click outside to close
+  // Click outside & Escape key to close
   useEffect(() => {
     function handleClickOutside(event) {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -104,11 +104,19 @@ export default function CustomDatePicker({
         setViewMode(isMonthOnly ? "months" : "calendar");
       }
     }
+    function handleKeyDown(event) {
+      if (event.key === "Escape" && isOpen) {
+        setIsOpen(false);
+        setViewMode(isMonthOnly ? "months" : "calendar");
+      }
+    }
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
     }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, isMonthOnly]);
 
@@ -253,6 +261,10 @@ export default function CustomDatePicker({
         className={`modern-datepicker-trigger ${isOpen ? "active" : ""}`}
         onClick={() => !disabled && setIsOpen(!isOpen)}
         tabIndex={disabled ? -1 : 0}
+        role="combobox"
+        aria-expanded={isOpen}
+        aria-haspopup="dialog"
+        aria-label={finalPlaceholder}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
@@ -273,6 +285,7 @@ export default function CustomDatePicker({
             className="modern-datepicker-clear"
             onClick={handleClear}
             title="Hapus Filter"
+            aria-label="Hapus filter tanggal"
           >
             &times;
           </button>

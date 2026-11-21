@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { IconType, IconX } from "../../Icons";
 
 export const FONT_SIZE_OPTIONS = [
-  { id: "compact", label: "Ringkas (50% / 2x Kecil)", desc: "Optimal untuk layar Android & HP kecil", scale: "52%" },
-  { id: "medium", label: "Sedang (75% / Proporsional)", desc: "Ukuran seimbang, nyaman dibaca di tablet/HP", scale: "75%" },
-  { id: "normal", label: "Standar (100% / Normal)", desc: "Ukuran asli bawaan web desktop komputer", scale: "100%" },
-  { id: "large", label: "Besar (115% / Jelas)", desc: "Teks lebih besar dan sangat jelas", scale: "115%" }
+  { id: "compact", label: "Ringkas (Kompak & Padat)", desc: "Ukuran proporsional hemat ruang dan rapi", scale: "90%" },
+  { id: "medium", label: "Sedang (Proporsional)", desc: "Ukuran seimbang, nyaman dibaca di tablet & HP", scale: "95%" },
+  { id: "normal", label: "Standar (100% / Normal)", desc: "Ukuran bawaan standar antarmuka sistem", scale: "100%" },
+  { id: "large", label: "Besar (115% / Jelas)", desc: "Teks lebih besar dan sangat jelas dibaca", scale: "115%" }
 ];
 
 export function applySystemFontSize(sizeId) {
-  const selected = FONT_SIZE_OPTIONS.find(o => o.id === sizeId) || FONT_SIZE_OPTIONS[0];
+  const selected = FONT_SIZE_OPTIONS.find(o => o.id === sizeId) || FONT_SIZE_OPTIONS[2];
   document.documentElement.setAttribute("data-font-size", selected.id);
   document.documentElement.style.setProperty("--app-font-scale", selected.scale);
   localStorage.setItem("app_font_size", selected.id);
@@ -19,40 +19,65 @@ export function applySystemFontSize(sizeId) {
 export function getSavedSystemFontSize() {
   const saved = localStorage.getItem("app_font_size");
   if (saved) return saved;
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
-  return isMobile ? "compact" : "normal";
+  return "normal";
 }
 
 export default function FontSizeModal({ isOpen, onClose, currentSize, onSelectSize }) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return createPortal(
     <div className="modal-backdrop-custom" onClick={onClose}>
-      <div className="modal-card-custom font-settings-modal" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="modal-card-custom font-settings-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="font-modal-title"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header-custom">
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <div className="font-settings-icon-circle">
               <IconType size={20} color="#0284c7" />
             </div>
             <div>
-              <h3 style={{ fontSize: "16px", fontWeight: "800", color: "#0f172a", margin: 0 }}>Pengaturan Ukuran Font</h3>
+              <h3 id="font-modal-title" style={{ fontSize: "16px", fontWeight: "800", color: "#0f172a", margin: 0 }}>Pengaturan Ukuran Font</h3>
               <p style={{ fontSize: "12px", color: "#64748b", margin: "2px 0 0 0" }}>Sesuaikan ukuran tulisan antarmuka sistem</p>
             </div>
           </div>
-          <button className="btn-close-modal" onClick={onClose} title="Tutup">
+          <button className="btn-close-modal" onClick={onClose} title="Tutup" aria-label="Tutup pengaturan font">
             <IconX size={20} />
           </button>
         </div>
 
-        <div className="font-options-list">
+        <div className="font-options-list" role="radiogroup" aria-labelledby="font-modal-title">
           {FONT_SIZE_OPTIONS.map((opt) => {
             const isSelected = currentSize === opt.id;
             return (
               <div
                 key={opt.id}
+                role="radio"
+                aria-checked={isSelected}
+                tabIndex={0}
                 className={`font-option-card ${isSelected ? "selected" : ""}`}
                 onClick={() => {
                   onSelectSize(opt.id);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onSelectSize(opt.id);
+                  }
                 }}
               >
                 <div className="font-option-radio">

@@ -112,12 +112,30 @@ function App() {
 
           <form onSubmit={handleLogin}>
             <div className="form-group">
-              <label className="form-label">Email Petugas</label>
-              <input className="form-control" type="email" placeholder="nama@annuqayah.test" value={email} onChange={(e) => setEmail(e.target.value)} required />
+              <label className="form-label" htmlFor="login-email">Email Petugas</label>
+              <input
+                id="login-email"
+                className="form-control"
+                type="email"
+                placeholder="nama@annuqayah.test"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                autoComplete="email"
+              />
             </div>
             <div className="form-group">
-              <label className="form-label">Kata Sandi</label>
-              <input className="form-control" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <label className="form-label" htmlFor="login-password">Kata Sandi</label>
+              <input
+                id="login-password"
+                className="form-control"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
+              />
             </div>
             <button type="submit" className="btn-primary-action">Masuk ke Sistem</button>
           </form>

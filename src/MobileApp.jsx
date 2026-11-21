@@ -615,6 +615,9 @@ export default function MobileApp({
             <button
               className={`gopay-user-badge ${showProfileDropdown ? "active" : ""}`}
               onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+              aria-label="Menu Profil Pengguna"
+              aria-expanded={showProfileDropdown}
+              aria-haspopup="menu"
             >
               <div className="gopay-badge-avatar">
                 {user?.name ? user.name.charAt(0).toUpperCase() : "A"}
@@ -694,7 +697,12 @@ export default function MobileApp({
               <div className="gopay-wallet-header">
                 <div className="gopay-wallet-title-row">
                   <span className="gopay-wallet-badge">Saldo Amanah Donasi</span>
-                  <button className="gopay-wallet-refresh-btn" onClick={() => { fetchStats(); fetchRecentTx(); }} title="Perbarui Saldo">
+                  <button
+                    className="gopay-wallet-refresh-btn"
+                    onClick={() => { fetchStats(); fetchRecentTx(); }}
+                    title="Perbarui Saldo"
+                    aria-label="Perbarui Saldo Riil"
+                  >
                     <IconRefresh size={14} color="#a7f3d0" />
                   </button>
                 </div>
@@ -1798,10 +1806,12 @@ export default function MobileApp({
       </main>
 
       {/* MODERN FLOATING CURVED DOCK BOTTOM BAR (Auto-Hide saat scroll ke bawah, Muncul saat scroll ke atas) */}
-      <nav className={`gopay-bottom-dock ${showBars ? "bar-visible" : "bar-hidden"}`}>
+      <nav className={`gopay-bottom-dock ${showBars ? "bar-visible" : "bar-hidden"}`} aria-label="Navigasi Utama">
         <button
           className={`gopay-dock-item ${activeTab === "home" && !selectedPosDetail ? "active" : ""}`}
           onClick={() => changeTab("home")}
+          aria-label="Tab Beranda"
+          aria-current={activeTab === "home" && !selectedPosDetail ? "page" : undefined}
         >
           <div className="dock-icon-wrapper">
             <IconDashboard size={21} />
@@ -1813,6 +1823,8 @@ export default function MobileApp({
         <button
           className={`gopay-dock-item ${activeTab === "riwayat" ? "active" : ""}`}
           onClick={() => changeTab("riwayat")}
+          aria-label="Tab Riwayat Mutasi"
+          aria-current={activeTab === "riwayat" ? "page" : undefined}
         >
           <div className="dock-icon-wrapper">
             <IconHistory size={21} />
@@ -1827,6 +1839,7 @@ export default function MobileApp({
             className={`gopay-dock-center-btn ${activeTab === "transaksi" ? "active" : ""}`}
             onClick={() => changeTab("transaksi")}
             title="Catat Infaq Uang Cepat"
+            aria-label="Catat Infaq Uang Cepat"
           >
             <div className="center-btn-inner">
               <IconPlusCircle size={28} color="#ffffff" />
@@ -1840,6 +1853,8 @@ export default function MobileApp({
           <button
             className={`gopay-dock-item ${activeTab === "barang" ? "active" : ""}`}
             onClick={() => changeTab("barang")}
+            aria-label="Tab Logistik Barang"
+            aria-current={activeTab === "barang" ? "page" : undefined}
           >
             <div className="dock-icon-wrapper">
               <IconPackage size={21} />
@@ -1852,6 +1867,8 @@ export default function MobileApp({
         <button
           className={`gopay-dock-item ${activeTab === "laporan" ? "active" : ""}`}
           onClick={() => changeTab("laporan")}
+          aria-label="Tab Laporan Donasi"
+          aria-current={activeTab === "laporan" ? "page" : undefined}
         >
           <div className="dock-icon-wrapper">
             <IconFileText size={21} />
