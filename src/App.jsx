@@ -57,6 +57,18 @@ function App() {
     localStorage.getItem("viewMode") || (window.innerWidth < 768 ? "mobile" : "desktop")
   );
 
+  // Validasi awal role akun untuk akses Portal Web (hanya Admin & Pimpinan)
+  useEffect(() => {
+    if (user) {
+      const userRole = user.role;
+      const isAllowed = userRole === "admin" || userRole === "admin_keuangan" || userRole === "pimpinan";
+      if (!isAllowed) {
+        handleLogout();
+        setAuthError("Akses Ditolak: Portal web (desktop & mobile) hanya dapat diakses oleh Admin dan Pimpinan. Petugas lapangan wajib login melalui aplikasi Android (APK Donasi Latee).");
+      }
+    }
+  }, [user]);
+
   // Auth States
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,12 +79,24 @@ function App() {
     setAuthError(null);
     fetch(`${API_BASE}/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      headers: { 
+        "Content-Type": "application/json",
+        "X-Client-Platform": "web",
+      },
+      body: JSON.stringify({ email, password, client: "web" }),
     })
-      .then((r) => r.json())
-      .then((data) => {
+      .then(async (r) => {
+        const data = await r.json();
+        return { ok: r.ok, data };
+      })
+      .then(({ ok, data }) => {
         if (data.token) {
+          const userRole = data.user?.role;
+          const isAllowed = userRole === "admin" || userRole === "admin_keuangan" || userRole === "pimpinan";
+          if (!isAllowed) {
+            setAuthError("Akses Ditolak: Portal web (desktop & mobile) hanya dapat diakses oleh Admin dan Pimpinan. Petugas lapangan wajib login melalui aplikasi Android (APK Donasi Latee).");
+            return;
+          }
           localStorage.setItem("token", data.token);
           localStorage.setItem("user", JSON.stringify(data.user));
           setToken(data.token);
@@ -106,6 +130,20 @@ function App() {
             </div>
             <h2 style={{ fontSize: "22px", fontWeight: "800", color: "var(--text-main)", textAlign: "center" }}>Donasi Latee</h2>
             <p style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "4px", textAlign: "center" }}>Pondok Pesantren Annuqayah Daerah Latee</p>
+            <div style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              marginTop: "10px",
+              padding: "4px 12px",
+              background: "rgba(2, 132, 199, 0.10)",
+              borderRadius: "16px",
+              fontSize: "11px",
+              fontWeight: "600",
+              color: "var(--brand-primary, #0284c7)"
+            }}>
+              <span>🏛️ Portal Web Khusus Admin & Pimpinan</span>
+            </div>
           </div>
 
           {authError && <div className="alert-box alert-danger">{authError}</div>}
@@ -138,22 +176,34 @@ function App() {
               />
             </div>
             <button type="submit" className="btn-primary-action">Masuk ke Sistem</button>
+
+            <div style={{
+              marginTop: "16px",
+              padding: "10px 14px",
+              background: "var(--bg-muted, #f8fafc)",
+              borderRadius: "12px",
+              fontSize: "11px",
+              color: "var(--text-muted)",
+              lineHeight: "1.4",
+              border: "1px dashed var(--border-color, #e2e8f0)",
+              textAlign: "center"
+            }}>
+              ℹ️ <strong>Ketentuan Akses:</strong> Portal Web ini (Desktop & Mobile Browser) hanya dapat diakses oleh <strong>Admin Keuangan</strong> dan <strong>Pimpinan</strong>. Petugas lapangan wajib login melalui <strong>Aplikasi Android (APK Donasi Latee)</strong>.
+            </div>
           </form>
         </div>
       </div>
     );
   }
 
-  // Render sesuai mode antarmuka
-  // Petugas lapangan diwajibkan hanya mengakses Mode HP (Mobile)
-  const isPetugasLapangan = user?.role === "petugas_lapangan";
+  // Render sesuai mode antarmuka (Desktop / Mobile) untuk Admin dan Pimpinan
   return (
     <>
-      {isPetugasLapangan || viewMode === "mobile" ? (
+      {viewMode === "mobile" ? (
         <MobileApp
           user={user}
           onLogout={handleLogout}
-          onSwitchPortal={() => !isPetugasLapangan && switchMode("desktop")}
+          onSwitchPortal={() => switchMode("desktop")}
           onOpenFontModal={() => setShowFontModal(true)}
           currentFontSize={systemFontSize}
           theme={theme}
