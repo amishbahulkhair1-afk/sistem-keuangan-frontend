@@ -5,9 +5,8 @@ import FontSizeModal, { applySystemFontSize, getSavedSystemFontSize } from "./co
 import ThemeModal from "./components/common/ThemeModal";
 import { getSavedBgTheme, saveBgTheme } from "./components/common/DynamicBackgroundCanvas";
 import logoImg from "./assets/logo.jpg";
+import { API_BASE } from "./utils/formatters";
 import "./App.css";
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
@@ -36,6 +35,16 @@ function App() {
   useEffect(() => {
     document.documentElement.setAttribute("data-bg-theme", bgTheme);
   }, [bgTheme]);
+
+  useEffect(() => {
+    const handleAuthExpired = () => {
+      setToken(null);
+      setUser(null);
+      setAuthError("Sesi Anda telah berakhir. Silakan login kembali.");
+    };
+    window.addEventListener("auth-expired", handleAuthExpired);
+    return () => window.removeEventListener("auth-expired", handleAuthExpired);
+  }, []);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === "light" ? "dark" : "light"));
@@ -109,6 +118,7 @@ function App() {
   };
 
   const handleLogout = () => {
+    fetch(`${API_BASE}/logout`, { method: "POST" }).catch(() => {});
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     setToken(null);

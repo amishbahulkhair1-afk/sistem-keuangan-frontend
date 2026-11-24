@@ -10,12 +10,15 @@ import { formatRupiah } from "../../utils/formatters";
 import CustomDropdown from "../common/CustomDropdown";
 import CustomDatePicker from "../common/CustomDatePicker";
 import TableActionMenu from "../common/TableActionMenu";
+import TablePagination from "../common/TablePagination";
+import BulkActionBar from "../common/BulkActionBar";
+import { useTablePagination } from "../common/useTablePagination";
 
 export default function PosMaterialLogistik({
   currentScopedPos,
   grandStockValue,
-  materialsList,
-  materialTxList,
+  materialsList = [],
+  materialTxList = [],
   isReadOnly,
   usageMsg,
   handleCatatPemakaianMaterial,
@@ -29,9 +32,59 @@ export default function PosMaterialLogistik({
   setUsagePurpose,
   usageRecipient,
   setUsageRecipient,
-  handleHapusMaterialTx
+  handleHapusMaterialTx,
+  handleBulkDeleteMaterialTx,
+  setConfirmDialog
 }) {
   const [tableFontSize, setTableFontSize] = useState("compact");
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
+  const {
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems,
+    displayStart,
+    displayEnd,
+    paginatedItems,
+    selectedIds,
+    selectedCount,
+    isAllSelected,
+    isSomeSelected,
+    toggleSelect,
+    toggleSelectAll,
+    selectAllFiltered,
+    clearSelection
+  } = useTablePagination(materialTxList, 10);
+
+  const handleTriggerBulkDelete = () => {
+    if (selectedCount === 0) return;
+    if (setConfirmDialog) {
+      setConfirmDialog({
+        title: `Batalkan ${selectedCount} Log Material Terpilih`,
+        message: `Apakah Anda yakin ingin membatalkan ${selectedCount} log transaksi material terpilih? Stok material akan dikembalikan secara otomatis.`,
+        confirmText: `Batalkan ${selectedCount} Log`,
+        confirmType: "danger",
+        details: [
+          { label: "Jumlah Log Terpilih", value: `${selectedCount} item`, isHighlight: true }
+        ],
+        onConfirm: async () => {
+          setIsBulkDeleting(true);
+          try {
+            if (handleBulkDeleteMaterialTx) {
+              const ok = await handleBulkDeleteMaterialTx(Array.from(selectedIds));
+              if (ok) clearSelection();
+            }
+          } finally {
+            setIsBulkDeleting(false);
+            setConfirmDialog(null);
+          }
+        }
+      });
+    }
+  };
   return (
     <div className="material-logistik-container">
       {/* 1. Stat Card */}
@@ -165,17 +218,45 @@ export default function PosMaterialLogistik({
       <div className="desktop-panel" style={{ marginTop: "20px" }}>
         <div className="panel-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <h3 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <IconClipboard size={18} color="var(--primary)" /> Log Riwayat Keluar-Masuk & Pemakaian Material Lapangan
+            <IconClipboard size={18} color="var(--primary)" /> Log Riwayat Keluar-Masuk & Pemakaian Material Lapangan ({materialTxList.length})
           </h3>
           <TableActionMenu
             fontSize={tableFontSize}
             onFontSizeChange={setTableFontSize}
           />
         </div>
+
+        {!isReadOnly && (
+          <BulkActionBar
+            selectedCount={selectedCount}
+            totalItems={materialTxList.length}
+            paginatedCount={paginatedItems.length}
+            entityName="log material"
+            onClearSelection={clearSelection}
+            onSelectAllFiltered={selectAllFiltered}
+            onBulkDelete={handleTriggerBulkDelete}
+            isDeleting={isBulkDeleting}
+          />
+        )}
+
         <div className={`table-responsive-desktop table-font-${tableFontSize}`}>
           <table className={`portal-table table-font-${tableFontSize}`}>
             <thead>
               <tr>
+                {!isReadOnly && (
+                  <th style={{ width: "40px", textAlign: "center" }}>
+                    <input
+                      type="checkbox"
+                      className="portal-checkbox"
+                      title="Pilih Semua di Halaman Ini"
+                      checked={isAllSelected}
+                      ref={(el) => {
+                        if (el) el.indeterminate = isSomeSelected;
+                      }}
+                      onChange={toggleSelectAll}
+                    />
+                  </th>
+                )}
                 <th>Tanggal</th>
                 <th>Kode & Material</th>
                 <th>Jenis</th>
@@ -186,15 +267,25 @@ export default function PosMaterialLogistik({
               </tr>
             </thead>
             <tbody>
-              {materialTxList.length === 0 ? (
+              {paginatedItems.length === 0 ? (
                 <tr>
-                  <td colSpan={!isReadOnly ? "7" : "6"} style={{ textAlign: "center", padding: "24px", color: "var(--text-muted)" }}>
+                  <td colSpan={!isReadOnly ? "8" : "6"} style={{ textAlign: "center", padding: "24px", color: "var(--text-muted)" }}>
                     Belum ada riwayat penerimaan/pemakaian material di pos ini.
                   </td>
                 </tr>
               ) : (
-                materialTxList.map(t => (
-                  <tr key={t.id}>
+                paginatedItems.map(t => (
+                  <tr key={t.id} className={selectedIds.has(t.id) ? "row-selected" : ""}>
+                    {!isReadOnly && (
+                      <td style={{ textAlign: "center" }}>
+                        <input
+                          type="checkbox"
+                          className="portal-checkbox"
+                          checked={selectedIds.has(t.id)}
+                          onChange={() => toggleSelect(t.id)}
+                        />
+                      </td>
+                    )}
                     <td><code>{t.transaction_date}</code></td>
                     <td style={{ fontWeight: "700" }}>[{t.material_code}] {t.material_name}</td>
                     <td>
@@ -223,6 +314,17 @@ export default function PosMaterialLogistik({
             </tbody>
           </table>
         </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={materialTxList.length}
+          displayStart={displayStart}
+          displayEnd={displayEnd}
+          pageSize={pageSize}
+          onPageSizeChange={setPageSize}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

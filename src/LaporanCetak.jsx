@@ -11,8 +11,7 @@ import {
   IconArrowRight,
   IconExternalLink,
 } from "./Icons";
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
+import { API_BASE } from "./utils/formatters";
 
 const REPORT_CARDS = [
   {
@@ -112,7 +111,8 @@ export default function LaporanCetak({ categories: propsCategories = [], account
   ];
 
   const handleOpenPdf = (reportId) => {
-    let url = `${API_BASE}/reports/pdf/${reportId}?year=${year}&month=${month}`;
+    const token = localStorage.getItem("token") || "";
+    let url = `${API_BASE}/reports/pdf/${reportId}?year=${year}&month=${month}&token=${encodeURIComponent(token)}`;
     if (filterMode === "range") {
       url += `&start_date=${startDate}&end_date=${endDate}`;
     }

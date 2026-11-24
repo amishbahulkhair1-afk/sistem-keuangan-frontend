@@ -17,8 +17,13 @@ import { formatRupiah, compressImage } from "../../utils/formatters";
 import CustomDropdown from "../common/CustomDropdown";
 import CustomDatePicker from "../common/CustomDatePicker";
 import TableActionMenu from "../common/TableActionMenu";
+import TablePagination from "../common/TablePagination";
+import BulkActionBar from "../common/BulkActionBar";
+import ConfirmModal from "../common/ConfirmModal";
+import { useTablePagination } from "../common/useTablePagination";
 
 export default function JurnalTransaksi({
+  allTransactions = [],
   filteredTransactions = [],
   categories = [],
   accounts = [],
@@ -35,7 +40,9 @@ export default function JurnalTransaksi({
   editTxItem,
   setEditTxItem,
   handleUpdateTransaction,
-  handleDeleteTransaction
+  handleDeleteTransaction,
+  handleBulkDeleteTransactions,
+  setConfirmDialog
 }) {
   const [tableFontSize, setTableFontSize] = useState("compact");
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -44,6 +51,70 @@ export default function JurnalTransaksi({
   const [isSavingEdit, setIsSavingEdit] = useState(false);
   const [deleteConfirmTx, setDeleteConfirmTx] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+  const [showBulkConfirmModal, setShowBulkConfirmModal] = useState(false);
+
+  const {
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems,
+    displayStart,
+    displayEnd,
+    paginatedItems,
+    selectedIds,
+    selectedCount,
+    isAllSelected,
+    isSomeSelected,
+    toggleSelect,
+    toggleSelectAll,
+    selectAllFiltered,
+    clearSelection
+  } = useTablePagination(filteredTransactions, 10);
+
+  const handleTriggerBulkDelete = () => {
+    if (selectedCount === 0) return;
+    if (setConfirmDialog) {
+      setConfirmDialog({
+        title: `Hapus ${selectedCount} Transaksi Terpilih`,
+        message: `Apakah Anda yakin ingin menghapus ${selectedCount} data transaksi terpilih secara permanen? Mutasi saldo kas rekening terkait akan disinkronkan kembali.`,
+        confirmText: `Hapus ${selectedCount} Transaksi`,
+        confirmType: "danger",
+        details: [
+          { label: "Jumlah Transaksi Terpilih", value: `${selectedCount} transaksi`, isHighlight: true },
+        ],
+        onConfirm: async () => {
+          setIsBulkDeleting(true);
+          try {
+            if (handleBulkDeleteTransactions) {
+              const ok = await handleBulkDeleteTransactions(Array.from(selectedIds));
+              if (ok) clearSelection();
+            }
+          } finally {
+            setIsBulkDeleting(false);
+            setConfirmDialog(null);
+          }
+        }
+      });
+    } else {
+      setShowBulkConfirmModal(true);
+    }
+  };
+
+  const executeBulkDeleteLocal = async () => {
+    setIsBulkDeleting(true);
+    try {
+      if (handleBulkDeleteTransactions) {
+        const ok = await handleBulkDeleteTransactions(Array.from(selectedIds));
+        if (ok) clearSelection();
+      }
+    } finally {
+      setIsBulkDeleting(false);
+      setShowBulkConfirmModal(false);
+    }
+  };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -169,10 +240,37 @@ export default function JurnalTransaksi({
         </div>
       </div>
 
+      {!isReadOnly && (
+        <BulkActionBar
+          selectedCount={selectedCount}
+          totalItems={filteredTransactions.length}
+          paginatedCount={paginatedItems.length}
+          entityName="transaksi"
+          onClearSelection={clearSelection}
+          onSelectAllFiltered={selectAllFiltered}
+          onBulkDelete={handleTriggerBulkDelete}
+          isDeleting={isBulkDeleting}
+        />
+      )}
+
       <div className={`table-responsive-desktop table-font-${tableFontSize}`}>
         <table className={`portal-table table-font-${tableFontSize}`}>
           <thead>
             <tr>
+              {!isReadOnly && (
+                <th style={{ width: "40px", textAlign: "center" }}>
+                  <input
+                    type="checkbox"
+                    className="portal-checkbox"
+                    title="Pilih Semua di Halaman Ini"
+                    checked={isAllSelected}
+                    ref={(el) => {
+                      if (el) el.indeterminate = isSomeSelected;
+                    }}
+                    onChange={toggleSelectAll}
+                  />
+                </th>
+              )}
               <th>Tanggal</th>
               <th>Donatur / Penerima</th>
               <th>Pos Program</th>
@@ -184,15 +282,25 @@ export default function JurnalTransaksi({
             </tr>
           </thead>
           <tbody>
-            {filteredTransactions.length === 0 ? (
+            {paginatedItems.length === 0 ? (
               <tr>
-                <td colSpan={!isReadOnly ? 8 : 7} style={{ textAlign: "center", padding: "32px", color: "var(--text-muted)" }}>
+                <td colSpan={!isReadOnly ? 9 : 7} style={{ textAlign: "center", padding: "32px", color: "var(--text-muted)" }}>
                   Tidak ada transaksi yang sesuai dengan filter.
                 </td>
               </tr>
             ) : (
-              filteredTransactions.map((tx) => (
-                <tr key={tx.id}>
+              paginatedItems.map((tx) => (
+                <tr key={tx.id} className={selectedIds.has(tx.id) ? "row-selected" : ""}>
+                  {!isReadOnly && (
+                    <td style={{ textAlign: "center" }}>
+                      <input
+                        type="checkbox"
+                        className="portal-checkbox"
+                        checked={selectedIds.has(tx.id)}
+                        onChange={() => toggleSelect(tx.id)}
+                      />
+                    </td>
+                  )}
                   <td><code>{tx.tanggal}</code></td>
                   <td style={{ fontWeight: "700" }}>{tx.donatur}</td>
                   <td><span className="badge-tag badge-pos">{tx.pos_program}</span></td>
@@ -244,6 +352,34 @@ export default function JurnalTransaksi({
           </tbody>
         </table>
       </div>
+
+      <TablePagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={filteredTransactions.length}
+        displayStart={displayStart}
+        displayEnd={displayEnd}
+        pageSize={pageSize}
+        onPageSizeChange={setPageSize}
+        onPageChange={setCurrentPage}
+        unfilteredTotal={allTransactions.length}
+      />
+
+      {showBulkConfirmModal && (
+        <ConfirmModal
+          isOpen={showBulkConfirmModal}
+          onClose={() => setShowBulkConfirmModal(false)}
+          onConfirm={executeBulkDeleteLocal}
+          title={`Hapus ${selectedCount} Transaksi Terpilih`}
+          message={`Apakah Anda yakin ingin menghapus ${selectedCount} transaksi terpilih sekaligus? Mutasi kas rekening terkait akan dikembalikan secara otomatis.`}
+          confirmText={`Hapus ${selectedCount} Transaksi`}
+          confirmType="danger"
+          isLoading={isBulkDeleting}
+          details={[
+            { label: "Jumlah Transaksi Terpilih", value: `${selectedCount} transaksi`, isHighlight: true }
+          ]}
+        />
+      )}
 
       {/* MODAL 1: LIHAT DETAIL & FOTO BUKTI (PORTAL KE BODY) */}
       {viewDetailTx && createPortal(

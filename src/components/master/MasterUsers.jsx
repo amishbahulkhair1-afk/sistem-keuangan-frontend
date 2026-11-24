@@ -3,6 +3,9 @@ import { createPortal } from "react-dom";
 import { IconPlusCircle, IconCheckCircle, IconBriefcase, IconEdit, IconTrash, IconShield } from "../../Icons";
 import CustomDropdown from "../common/CustomDropdown";
 import TableActionMenu from "../common/TableActionMenu";
+import TablePagination from "../common/TablePagination";
+import BulkActionBar from "../common/BulkActionBar";
+import { useTablePagination } from "../common/useTablePagination";
 
 const ACCESS_LEVELS = [
   { value: "full", label: "Hak Akses Penuh (Full Control)", desc: "Dapat melihat, menambah, mengedit, dan menghapus seluruh data pada pos yang ditugaskan." },
@@ -31,10 +34,60 @@ export default function MasterUsers({
   usersList = [],
   setEditUserItem,
   handleDeleteUser,
+  handleBulkDeleteUsers,
+  setConfirmDialog,
   editUserItem,
   handleUpdateUser
 }) {
   const [tableFontSize, setTableFontSize] = useState("compact");
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
+  const {
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems,
+    displayStart,
+    displayEnd,
+    paginatedItems,
+    selectedIds,
+    selectedCount,
+    isAllSelected,
+    isSomeSelected,
+    toggleSelect,
+    toggleSelectAll,
+    selectAllFiltered,
+    clearSelection
+  } = useTablePagination(usersList, 10);
+
+  const handleTriggerBulkDelete = () => {
+    if (selectedCount === 0) return;
+    if (setConfirmDialog) {
+      setConfirmDialog({
+        title: `Hapus ${selectedCount} Pengguna Terpilih`,
+        message: `Apakah Anda yakin ingin menghapus ${selectedCount} akun pengguna/petugas yang dipilih? (Akun Anda sendiri tidak akan dihapus).`,
+        confirmText: `Hapus ${selectedCount} Pengguna`,
+        confirmType: "danger",
+        details: [
+          { label: "Jumlah Akun Terpilih", value: `${selectedCount} akun`, isHighlight: true }
+        ],
+        onConfirm: async () => {
+          setIsBulkDeleting(true);
+          try {
+            if (handleBulkDeleteUsers) {
+              const ok = await handleBulkDeleteUsers(Array.from(selectedIds));
+              if (ok) clearSelection();
+            }
+          } finally {
+            setIsBulkDeleting(false);
+            setConfirmDialog(null);
+          }
+        }
+      });
+    }
+  };
   const toggleCatSelection = (catId, currentList, setter) => {
     const id = Number(catId);
     if (currentList.includes(id)) {
@@ -178,10 +231,38 @@ export default function MasterUsers({
             onFontSizeChange={setTableFontSize}
           />
         </div>
+
+        {!isReadOnly && (
+          <BulkActionBar
+            selectedCount={selectedCount}
+            totalItems={usersList.length}
+            paginatedCount={paginatedItems.length}
+            entityName="petugas"
+            onClearSelection={clearSelection}
+            onSelectAllFiltered={selectAllFiltered}
+            onBulkDelete={handleTriggerBulkDelete}
+            isDeleting={isBulkDeleting}
+          />
+        )}
+
         <div className={`table-responsive-desktop table-font-${tableFontSize}`}>
           <table className={`portal-table table-font-${tableFontSize}`}>
             <thead>
               <tr>
+                {!isReadOnly && (
+                  <th style={{ width: "40px", textAlign: "center" }}>
+                    <input
+                      type="checkbox"
+                      className="portal-checkbox"
+                      title="Pilih Semua di Halaman Ini"
+                      checked={isAllSelected}
+                      ref={(el) => {
+                        if (el) el.indeterminate = isSomeSelected;
+                      }}
+                      onChange={toggleSelectAll}
+                    />
+                  </th>
+                )}
                 <th>Nama Petugas</th>
                 <th>Email Login</th>
                 <th>Peran</th>
@@ -191,67 +272,96 @@ export default function MasterUsers({
               </tr>
             </thead>
             <tbody>
-              {usersList.map(u => {
-                const posDisplay = u.pos_labels && u.pos_labels.length > 0
-                  ? u.pos_labels.join(", ")
-                  : (u.assigned_category_code ? `[${u.assigned_category_code}] ${u.assigned_category_name}` : "Semua Pos");
+              {paginatedItems.length === 0 ? (
+                <tr>
+                  <td colSpan={!isReadOnly ? 7 : 5} style={{ textAlign: "center", padding: "24px", color: "var(--text-muted)" }}>
+                    Belum ada data petugas.
+                  </td>
+                </tr>
+              ) : (
+                paginatedItems.map(u => {
+                  const posDisplay = u.pos_labels && u.pos_labels.length > 0
+                    ? u.pos_labels.join(", ")
+                    : (u.assigned_category_code ? `[${u.assigned_category_code}] ${u.assigned_category_name}` : "Semua Pos");
 
-                return (
-                  <tr key={u.id}>
-                    <td style={{ fontWeight: "700" }}>{u.name}</td>
-                    <td><code>{u.email}</code></td>
-                    <td>
-                      <span className="badge-tag" style={{ background: u.role === 'penjab_pos' ? '#f0f9ff' : '#eff6ff', color: u.role === 'penjab_pos' ? '#0284c7' : '#1d4ed8' }}>
-                        {u.role.replace('_', ' ').toUpperCase()}
-                      </span>
-                    </td>
-                    <td>
-                      <span
-                        className="badge-tag"
-                        style={{
-                          background: u.access_level === 'full' ? '#e0f2fe' : u.access_level === 'read_only' ? '#f1f5f9' : '#fef3c7',
-                          color: u.access_level === 'full' ? '#0369a1' : u.access_level === 'read_only' ? '#475569' : '#b45309',
-                          fontWeight: "700"
-                        }}
-                      >
-                        {getAccessLabel(u.access_level)}
-                      </span>
-                    </td>
-                    <td style={{ fontSize: "12px", maxWidth: "220px", whiteSpace: "normal" }}>
-                      {posDisplay}
-                    </td>
-                    {!isReadOnly && (
-                      <td style={{ textAlign: "center" }}>
-                        <div style={{ display: "inline-flex", gap: "6px" }}>
-                          <button
-                            type="button"
-                            title="Edit Petugas"
-                            className="btn-edit-cell"
-                            onClick={() => setEditUserItem({
-                              ...u,
-                              assigned_categories: u.assigned_categories || (u.assigned_category_id ? [u.assigned_category_id] : []),
-                              access_level: u.access_level || "full"
-                            })}
-                          >
-                            <IconEdit size={14} />
-                          </button>
-                          <button
-                            type="button"
-                            title="Hapus Petugas"
-                            className="btn-delete-cell"
-                            onClick={() => handleDeleteUser(u)}
-                          >
-                            <IconTrash size={14} />
-                          </button>
-                        </div>
+                  return (
+                    <tr key={u.id} className={selectedIds.has(u.id) ? "row-selected" : ""}>
+                      {!isReadOnly && (
+                        <td style={{ textAlign: "center" }}>
+                          <input
+                            type="checkbox"
+                            className="portal-checkbox"
+                            checked={selectedIds.has(u.id)}
+                            onChange={() => toggleSelect(u.id)}
+                          />
+                        </td>
+                      )}
+                      <td style={{ fontWeight: "700" }}>{u.name}</td>
+                      <td><code>{u.email}</code></td>
+                      <td>
+                        <span className="badge-tag" style={{ background: u.role === 'penjab_pos' ? '#f0f9ff' : '#eff6ff', color: u.role === 'penjab_pos' ? '#0284c7' : '#1d4ed8' }}>
+                          {u.role.replace('_', ' ').toUpperCase()}
+                        </span>
                       </td>
-                    )}
-                  </tr>
-                );
-              })}
+                      <td>
+                        <span
+                          className="badge-tag"
+                          style={{
+                            background: u.access_level === 'full' ? '#e0f2fe' : u.access_level === 'read_only' ? '#f1f5f9' : '#fef3c7',
+                            color: u.access_level === 'full' ? '#0369a1' : u.access_level === 'read_only' ? '#475569' : '#b45309',
+                            fontWeight: "700"
+                          }}
+                        >
+                          {getAccessLabel(u.access_level)}
+                        </span>
+                      </td>
+                      <td style={{ fontSize: "12px", maxWidth: "220px", whiteSpace: "normal" }}>
+                        {posDisplay}
+                      </td>
+                      {!isReadOnly && (
+                        <td style={{ textAlign: "center" }}>
+                          <div style={{ display: "inline-flex", gap: "6px" }}>
+                            <button
+                              type="button"
+                              title="Edit Petugas"
+                              className="btn-edit-cell"
+                              onClick={() => setEditUserItem({
+                                ...u,
+                                assigned_categories: u.assigned_categories || (u.assigned_category_id ? [u.assigned_category_id] : []),
+                                access_level: u.access_level || "full"
+                              })}
+                            >
+                              <IconEdit size={14} />
+                            </button>
+                            <button
+                              type="button"
+                              title="Hapus Petugas"
+                              className="btn-delete-cell"
+                              onClick={() => handleDeleteUser(u)}
+                            >
+                              <IconTrash size={14} />
+                            </button>
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={usersList.length}
+          displayStart={displayStart}
+          displayEnd={displayEnd}
+          pageSize={pageSize}
+          onPageSizeChange={setPageSize}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       {/* MODAL EDIT MASTER USER / PENJAB */}

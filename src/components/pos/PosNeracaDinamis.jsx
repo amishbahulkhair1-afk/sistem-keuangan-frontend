@@ -125,56 +125,60 @@ export default function PosNeracaDinamis({
                     </tr>
                   ))}
 
-                  {neracaPosData?.aktiva?.biaya_operasional && neracaPosData.aktiva.biaya_operasional.length > 0 && (
-                    <>
-                      <tr className="neraca-group-header">
-                        <td colSpan={!isReadOnly ? 4 : 3}>B. Akumulasi Realisasi Biaya</td>
-                      </tr>
-                      {neracaPosData.aktiva.biaya_operasional.map((b, i) => (
-                        <tr key={i}>
-                          <td><code>{b.code}</code></td>
-                          <td>
-                            {b.name}
-                            {b.is_auto && <span style={{ fontSize: "10px", color: "#64748b", marginLeft: "6px" }}>(Otomatis)</span>}
-                          </td>
-                          <td style={{ textAlign: "right", fontWeight: "700" }}>{formatRupiah(b.amount)}</td>
-                          {!isReadOnly && (
-                            <td style={{ textAlign: "center" }}>
-                              {!b.is_auto ? (
-                                <div style={{ display: "flex", gap: "4px", justifyContent: "center" }}>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleOpenEditBalanceModal(b)}
-                                    className="btn-edit-cell"
-                                    title="Edit Baris"
-                                  >
-                                    <IconEdit size={13} />
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleHapusCustomBalanceItem(b)}
-                                    className="btn-delete-cell"
-                                    title="Hapus Baris"
-                                  >
-                                    <IconTrash size={13} />
-                                  </button>
-                                </div>
-                              ) : (
+                  <tr className="neraca-group-header">
+                    <td colSpan={!isReadOnly ? 4 : 3}>B. Akumulasi Realisasi Biaya</td>
+                  </tr>
+                  {neracaPosData?.aktiva?.biaya_operasional && neracaPosData.aktiva.biaya_operasional.length > 0 ? (
+                    neracaPosData.aktiva.biaya_operasional.map((b, i) => (
+                      <tr key={i}>
+                        <td><code>{b.code}</code></td>
+                        <td>
+                          {b.name}
+                          {b.is_auto && <span style={{ fontSize: "10px", color: "#64748b", marginLeft: "6px" }}>(Otomatis)</span>}
+                        </td>
+                        <td style={{ textAlign: "right", fontWeight: "700" }}>{formatRupiah(b.amount)}</td>
+                        {!isReadOnly && (
+                          <td style={{ textAlign: "center" }}>
+                            {!b.is_auto ? (
+                              <div style={{ display: "flex", gap: "4px", justifyContent: "center" }}>
                                 <button
                                   type="button"
-                                  className="btn-goto-shortcut"
-                                  onClick={() => setActiveMenu("pos_transaksi")}
-                                  title="Buka Catatan Belanja Kas Pos"
+                                  onClick={() => handleOpenEditBalanceModal(b)}
+                                  className="btn-edit-cell"
+                                  title="Edit Baris"
                                 >
-                                  <IconExternalLink size={12} />
-                                  <span>Kelola</span>
+                                  <IconEdit size={13} />
                                 </button>
-                              )}
-                            </td>
-                          )}
-                        </tr>
-                      ))}
-                    </>
+                                <button
+                                  type="button"
+                                  onClick={() => handleHapusCustomBalanceItem(b)}
+                                  className="btn-delete-cell"
+                                  title="Hapus Baris"
+                                >
+                                  <IconTrash size={13} />
+                                </button>
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                className="btn-goto-shortcut"
+                                onClick={() => setActiveMenu("pos_transaksi")}
+                                title="Buka Catatan Belanja Kas Pos"
+                              >
+                                <IconExternalLink size={12} />
+                                <span>Kelola</span>
+                              </button>
+                            )}
+                          </td>
+                        )}
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={!isReadOnly ? 4 : 3} style={{ textAlign: "center", color: "#94a3b8", fontStyle: "italic", padding: "10px", fontSize: "12px" }}>
+                        Belum ada realisasi biaya yang tercatat pada pos ini
+                      </td>
+                    </tr>
                   )}
                   <tr style={{ background: "var(--surface-subtle)", fontWeight: "800" }}>
                     <td colSpan={2}>TOTAL AKTIVA</td>

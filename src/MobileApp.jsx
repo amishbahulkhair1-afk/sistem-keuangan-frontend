@@ -47,10 +47,8 @@ import {
   IconBank,
   IconArrowRight
 } from "./Icons";
-import { formatPosNameShort, POS_ABBREVIATIONS, compressImage } from "./utils/formatters";
+import { formatPosNameShort, POS_ABBREVIATIONS, compressImage, API_BASE } from "./utils/formatters";
 import DynamicBackgroundCanvas from "./components/common/DynamicBackgroundCanvas";
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
 
 export default function MobileApp({
   user,

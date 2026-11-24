@@ -1,0 +1,30 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Jangan alihkan permintaan ke backend Laravel (subfolder /backend_donasi)
+  RewriteRule ^backend_donasi/ - [L]
+
+  # 2. Alihkan akses /uploads ke folder uploads backend Laravel jika diakses dari frontend
+  RewriteRule ^uploads/(.*)$ /backend_donasi/uploads/$1 [L]
+
+  # 3. Jika file statis (gambar, css, js, html) atau direktori riil ada, sajikan langsung
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 4. Arahkan seluruh rute React SPA ke index.html
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Caching browser untuk aset statis Vite agar cepat di-load
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+</IfModule>

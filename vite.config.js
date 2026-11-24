@@ -13,6 +13,16 @@ export default defineConfig({
         target: 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
+      '/backend_donasi/api': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/backend_donasi\/api/, '/api'),
+      },
+      '/backend_donasi/uploads': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/backend_donasi\/uploads/, '/uploads'),
+      },
       '/uploads': {
         target: 'http://127.0.0.1:8000',
         changeOrigin: true,

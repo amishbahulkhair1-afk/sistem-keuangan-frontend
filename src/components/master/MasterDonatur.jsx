@@ -13,6 +13,9 @@ import { formatRupiah, API_BASE } from "../../utils/formatters";
 import CustomDropdown from "../common/CustomDropdown";
 import CustomDatePicker from "../common/CustomDatePicker";
 import TableActionMenu from "../common/TableActionMenu";
+import TablePagination from "../common/TablePagination";
+import BulkActionBar from "../common/BulkActionBar";
+import { useTablePagination } from "../common/useTablePagination";
 
 export default function MasterDonatur({
   isReadOnly,
@@ -24,7 +27,7 @@ export default function MasterDonatur({
   setNewDonorPhone,
   newDonorAddress,
   setNewDonorAddress,
-  donorsList,
+  donorsList = [],
   donorStartDate,
   donorEndDate,
   donorPosFilter,
@@ -37,11 +40,61 @@ export default function MasterDonatur({
   categories,
   setEditDonorItem,
   handleDeleteDonatur,
+  handleBulkDeleteDonatur,
+  setConfirmDialog,
   editDonorItem,
   handleUpdateDonatur
 }) {
   const [tableFontSize, setTableFontSize] = useState("compact");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
+  const {
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems,
+    displayStart,
+    displayEnd,
+    paginatedItems,
+    selectedIds,
+    selectedCount,
+    isAllSelected,
+    isSomeSelected,
+    toggleSelect,
+    toggleSelectAll,
+    selectAllFiltered,
+    clearSelection
+  } = useTablePagination(donorsList, 10);
+
+  const handleTriggerBulkDelete = () => {
+    if (selectedCount === 0) return;
+    if (setConfirmDialog) {
+      setConfirmDialog({
+        title: `Hapus ${selectedCount} Donatur Terpilih`,
+        message: `Apakah Anda yakin ingin menghapus ${selectedCount} donatur yang dipilih? Donatur yang memiliki riwayat transaksi donasi akan dilewati demi integritas pembukuan.`,
+        confirmText: `Hapus ${selectedCount} Donatur`,
+        confirmType: "danger",
+        details: [
+          { label: "Jumlah Donatur Terpilih", value: `${selectedCount} donatur`, isHighlight: true }
+        ],
+        onConfirm: async () => {
+          setIsBulkDeleting(true);
+          try {
+            if (handleBulkDeleteDonatur) {
+              const ok = await handleBulkDeleteDonatur(Array.from(selectedIds));
+              if (ok) clearSelection();
+            }
+          } finally {
+            setIsBulkDeleting(false);
+            setConfirmDialog(null);
+          }
+        }
+      });
+    }
+  };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -116,7 +169,8 @@ export default function MasterDonatur({
               className="btn-secondary-action"
               style={{ padding: "6px 12px", fontSize: "13px" }}
               onClick={() => {
-                let url = `${API_BASE}/reports/pdf/donatur?`;
+                const token = localStorage.getItem("token") || "";
+                let url = `${API_BASE}/reports/pdf/donatur?token=${encodeURIComponent(token)}&`;
                 if (donorStartDate) url += `start_date=${donorStartDate}&`;
                 if (donorEndDate) url += `end_date=${donorEndDate}&`;
                 if (donorPosFilter) url += `pos=${encodeURIComponent(donorPosFilter)}&`;
@@ -195,10 +249,37 @@ export default function MasterDonatur({
           </div>
         </div>
 
+        {!isReadOnly && (
+          <BulkActionBar
+            selectedCount={selectedCount}
+            totalItems={donorsList.length}
+            paginatedCount={paginatedItems.length}
+            entityName="donatur"
+            onClearSelection={clearSelection}
+            onSelectAllFiltered={selectAllFiltered}
+            onBulkDelete={handleTriggerBulkDelete}
+            isDeleting={isBulkDeleting}
+          />
+        )}
+
         <div className={`table-responsive-desktop table-font-${tableFontSize}`}>
           <table className={`portal-table table-font-${tableFontSize}`}>
             <thead>
               <tr>
+                {!isReadOnly && (
+                  <th style={{ width: "40px", textAlign: "center" }}>
+                    <input
+                      type="checkbox"
+                      className="portal-checkbox"
+                      title="Pilih Semua di Halaman Ini"
+                      checked={isAllSelected}
+                      ref={(el) => {
+                        if (el) el.indeterminate = isSomeSelected;
+                      }}
+                      onChange={toggleSelectAll}
+                    />
+                  </th>
+                )}
                 <th>Donatur</th>
                 <th>Kontak & Alamat</th>
                 <th>Pemetaan Pos Program</th>
@@ -208,15 +289,25 @@ export default function MasterDonatur({
               </tr>
             </thead>
             <tbody>
-              {donorsList.length === 0 ? (
+              {paginatedItems.length === 0 ? (
                 <tr>
-                  <td colSpan={!isReadOnly ? 6 : 5} style={{ textAlign: "center", padding: "24px", color: "var(--text-muted)" }}>
+                  <td colSpan={!isReadOnly ? 7 : 5} style={{ textAlign: "center", padding: "24px", color: "var(--text-muted)" }}>
                     Tidak ada data donatur yang cocok dengan filter.
                   </td>
                 </tr>
               ) : (
-                donorsList.map(d => (
-                  <tr key={d.id}>
+                paginatedItems.map(d => (
+                  <tr key={d.id} className={selectedIds.has(d.id) ? "row-selected" : ""}>
+                    {!isReadOnly && (
+                      <td style={{ textAlign: "center" }}>
+                        <input
+                          type="checkbox"
+                          className="portal-checkbox"
+                          checked={selectedIds.has(d.id)}
+                          onChange={() => toggleSelect(d.id)}
+                        />
+                      </td>
+                    )}
                     <td>
                       <strong style={{ display: "block", color: "var(--text-main)" }}>{d.name}</strong>
                       <span style={{ fontSize: "11px", color: "var(--text-muted)" }}>ID #{d.id}</span>
@@ -290,6 +381,17 @@ export default function MasterDonatur({
             </tbody>
           </table>
         </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={donorsList.length}
+          displayStart={displayStart}
+          displayEnd={displayEnd}
+          pageSize={pageSize}
+          onPageSizeChange={setPageSize}
+          onPageChange={setCurrentPage}
+        />
       </div>
 
       {/* MODAL EDIT MASTER DONATUR */}

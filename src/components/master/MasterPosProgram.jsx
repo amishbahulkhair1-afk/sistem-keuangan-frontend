@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
-import { IconPlusCircle, IconCheckCircle, IconTable, IconEdit, IconTrash } from "../../Icons";
+import { IconPlusCircle, IconCheckCircle, IconTable, IconEdit, IconTrash, IconRefresh } from "../../Icons";
 import CustomDropdown from "../common/CustomDropdown";
 import TableActionMenu from "../common/TableActionMenu";
+import TablePagination from "../common/TablePagination";
+import BulkActionBar from "../common/BulkActionBar";
+import { useTablePagination } from "../common/useTablePagination";
 
 export default function MasterPosProgram({
   isReadOnly,
@@ -20,13 +23,65 @@ export default function MasterPosProgram({
   setNewCatDigit,
   newCatDesc,
   setNewCatDesc,
-  categories,
+  categories = [],
   setEditCatItem,
   handleDeletePos,
+  handleBulkDeletePos,
+  setConfirmDialog,
   editCatItem,
-  handleUpdatePos
+  handleUpdatePos,
+  handleReallocateQris,
+  isReallocating,
 }) {
   const [tableFontSize, setTableFontSize] = useState("compact");
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
+  const {
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems,
+    displayStart,
+    displayEnd,
+    paginatedItems,
+    selectedIds,
+    selectedCount,
+    isAllSelected,
+    isSomeSelected,
+    toggleSelect,
+    toggleSelectAll,
+    selectAllFiltered,
+    clearSelection
+  } = useTablePagination(categories, 10);
+
+  const handleTriggerBulkDelete = () => {
+    if (selectedCount === 0) return;
+    if (setConfirmDialog) {
+      setConfirmDialog({
+        title: `Hapus ${selectedCount} Pos Program Terpilih`,
+        message: `Apakah Anda yakin ingin menonaktifkan/menghapus ${selectedCount} pos program yang dipilih?`,
+        confirmText: `Hapus ${selectedCount} Pos`,
+        confirmType: "warning",
+        details: [
+          { label: "Jumlah Pos Terpilih", value: `${selectedCount} pos`, isHighlight: true }
+        ],
+        onConfirm: async () => {
+          setIsBulkDeleting(true);
+          try {
+            if (handleBulkDeletePos) {
+              const ok = await handleBulkDeletePos(Array.from(selectedIds));
+              if (ok) clearSelection();
+            }
+          } finally {
+            setIsBulkDeleting(false);
+            setConfirmDialog(null);
+          }
+        }
+      });
+    }
+  };
   return (
     <div className="master-pos-container">
       <div className={!isReadOnly ? "desktop-2col-grid" : ""}>
@@ -88,19 +143,62 @@ export default function MasterPosProgram({
         )}
 
         <div className="desktop-panel">
-          <div className="panel-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <h3 style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div className="panel-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "8px" }}>
+            <h3 style={{ display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
               <IconTable size={18} color="var(--primary)" /> Daftar Master Pos Program ({categories.length})
             </h3>
-            <TableActionMenu
-              fontSize={tableFontSize}
-              onFontSizeChange={setTableFontSize}
-            />
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              {!isReadOnly && handleReallocateQris && (
+                <button
+                  type="button"
+                  className="btn-secondary"
+                  style={{ fontSize: "12px", padding: "6px 12px", display: "inline-flex", alignItems: "center", gap: "6px" }}
+                  onClick={handleReallocateQris}
+                  disabled={isReallocating}
+                  title="Sinkronkan alokasi pos transaksi QRIS berdasarkan digit terbaru"
+                >
+                  <IconRefresh size={14} />
+                  <span>{isReallocating ? "Sinkronisasi..." : "Sinkronkan Alokasi QRIS"}</span>
+                </button>
+              )}
+              <TableActionMenu
+                fontSize={tableFontSize}
+                onFontSizeChange={setTableFontSize}
+              />
+            </div>
           </div>
+
+          {!isReadOnly && (
+            <BulkActionBar
+              selectedCount={selectedCount}
+              totalItems={categories.length}
+              paginatedCount={paginatedItems.length}
+              entityName="pos program"
+              onClearSelection={clearSelection}
+              onSelectAllFiltered={selectAllFiltered}
+              onBulkDelete={handleTriggerBulkDelete}
+              isDeleting={isBulkDeleting}
+            />
+          )}
+
           <div className={`table-responsive-desktop table-font-${tableFontSize}`}>
           <table className={`portal-table table-font-${tableFontSize}`}>
             <thead>
               <tr>
+                {!isReadOnly && (
+                  <th style={{ width: "40px", textAlign: "center" }}>
+                    <input
+                      type="checkbox"
+                      className="portal-checkbox"
+                      title="Pilih Semua di Halaman Ini"
+                      checked={isAllSelected}
+                      ref={(el) => {
+                        if (el) el.indeterminate = isSomeSelected;
+                      }}
+                      onChange={toggleSelectAll}
+                    />
+                  </th>
+                )}
                 <th>Kode</th>
                 <th>Nama Pos Program</th>
                 <th>Jenis</th>
@@ -110,48 +208,77 @@ export default function MasterPosProgram({
               </tr>
             </thead>
             <tbody>
-              {categories.map(c => (
-                <tr key={c.id}>
-                  <td><span className="badge-tag badge-pos">{c.code}</span></td>
-                  <td style={{ fontWeight: "700" }}>{c.name}</td>
-                  <td>
-                    <span className="badge-tag" style={{ background: c.category_type === 'non_pembangunan' ? '#eff6ff' : '#f0f9ff', color: c.category_type === 'non_pembangunan' ? '#1d4ed8' : '#0284c7' }}>
-                      {c.category_type === 'non_pembangunan' ? 'Non-Proyek' : 'Proyek Fisik'}
-                    </span>
+              {paginatedItems.length === 0 ? (
+                <tr>
+                  <td colSpan={!isReadOnly ? 7 : 5} style={{ textAlign: "center", padding: "24px", color: "var(--text-muted)" }}>
+                    Belum ada pos program.
                   </td>
-                  <td>{c.pic_name || "-"}</td>
-                  <td>
-                    <span className={`badge-tag ${c.is_active ? "badge-income" : "badge-expense"}`}>
-                      {c.is_active ? "Aktif" : "Non-Aktif"}
-                    </span>
-                  </td>
-                  {!isReadOnly && (
-                    <td style={{ textAlign: "center" }}>
-                      <div style={{ display: "inline-flex", gap: "6px" }}>
-                        <button
-                          type="button"
-                          className="btn-edit-cell"
-                          title="Edit Pos Program"
-                          onClick={() => setEditCatItem({ ...c })}
-                        >
-                          <IconEdit size={14} />
-                        </button>
-                        <button
-                          type="button"
-                          className="btn-delete-cell"
-                          title="Nonaktifkan Pos"
-                          onClick={() => handleDeletePos(c)}
-                        >
-                          <IconTrash size={14} />
-                        </button>
-                      </div>
-                    </td>
-                  )}
                 </tr>
-              ))}
+              ) : (
+                paginatedItems.map(c => (
+                  <tr key={c.id} className={selectedIds.has(c.id) ? "row-selected" : ""}>
+                    {!isReadOnly && (
+                      <td style={{ textAlign: "center" }}>
+                        <input
+                          type="checkbox"
+                          className="portal-checkbox"
+                          checked={selectedIds.has(c.id)}
+                          onChange={() => toggleSelect(c.id)}
+                        />
+                      </td>
+                    )}
+                    <td><span className="badge-tag badge-pos">{c.code}</span></td>
+                    <td style={{ fontWeight: "700" }}>{c.name}</td>
+                    <td>
+                      <span className="badge-tag" style={{ background: c.category_type === 'non_pembangunan' ? '#eff6ff' : '#f0f9ff', color: c.category_type === 'non_pembangunan' ? '#1d4ed8' : '#0284c7' }}>
+                        {c.category_type === 'non_pembangunan' ? 'Non-Proyek' : 'Proyek Fisik'}
+                      </span>
+                    </td>
+                    <td>{c.pic_name || "-"}</td>
+                    <td>
+                      <span className={`badge-tag ${c.is_active ? "badge-income" : "badge-expense"}`}>
+                        {c.is_active ? "Aktif" : "Non-Aktif"}
+                      </span>
+                    </td>
+                    {!isReadOnly && (
+                      <td style={{ textAlign: "center" }}>
+                        <div style={{ display: "inline-flex", gap: "6px" }}>
+                          <button
+                            type="button"
+                            className="btn-edit-cell"
+                            title="Edit Pos Program"
+                            onClick={() => setEditCatItem({ ...c })}
+                          >
+                            <IconEdit size={14} />
+                          </button>
+                          <button
+                            type="button"
+                            className="btn-delete-cell"
+                            title="Nonaktifkan Pos"
+                            onClick={() => handleDeletePos(c)}
+                          >
+                            <IconTrash size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={categories.length}
+          displayStart={displayStart}
+          displayEnd={displayEnd}
+          pageSize={pageSize}
+          onPageSizeChange={setPageSize}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
 
@@ -213,8 +340,9 @@ export default function MasterPosProgram({
                     <input
                       className="form-control"
                       type="text"
-                      value={editCatItem.qris_digit || ""}
-                      onChange={e => setEditCatItem({ ...editCatItem, qris_digit: e.target.value })}
+                      placeholder="Contoh: 2 (atau kosongkan jika non-QRIS)"
+                      value={editCatItem.qris_digit ?? editCatItem.qris_unit_digit ?? ""}
+                      onChange={e => setEditCatItem({ ...editCatItem, qris_digit: e.target.value, qris_unit_digit: e.target.value })}
                     />
                   </div>
                   <div className="form-group">

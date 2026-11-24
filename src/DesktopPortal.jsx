@@ -83,6 +83,7 @@ export default function DesktopPortal({
   const [posTxFormTgl, setPosTxFormTgl] = useState(new Date().toISOString().split("T")[0]);
   const [posTxFormType, setPosTxFormType] = useState("expense"); // 'income' atau 'expense'
   const [posTxFormCatType, setPosTxFormCatType] = useState("hutang_bayar");
+  const [posTxPaymentStatus, setPosTxPaymentStatus] = useState("lunas"); // 'lunas' atau 'hutang'
   const [posTxFormAmount, setPosTxFormAmount] = useState("");
   const [posTxFormParty, setPosTxFormParty] = useState("");
   const [posTxFormDesc, setPosTxFormDesc] = useState("");
@@ -362,6 +363,7 @@ export default function DesktopPortal({
         transaction_date: posTxFormTgl,
         type: calculatedType,
         category_tx_type: posTxFormCatType,
+        payment_status: posTxPaymentStatus,
         amount: finalAmount,
         recipient_or_sender: posTxFormParty,
         description: finalDesc,
@@ -377,6 +379,7 @@ export default function DesktopPortal({
       .then(data => {
         if (data.id) {
           setPosTxMsg({ type: "success", text: data.message });
+          setPosTxPaymentStatus("lunas");
           setPosTxFormAmount("");
           setPosTxFormParty("");
           setPosTxFormDesc("");
@@ -418,6 +421,31 @@ export default function DesktopPortal({
         }
       }
     });
+  };
+
+  const handleBulkDeletePosTransactions = async (ids) => {
+    if (!ids || ids.length === 0) return false;
+    try {
+      const res = await fetch(`${API_BASE}/pos-transactions/bulk-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        fetchPosTransactions(selectedPosScope);
+        fetchDebts(selectedPosScope);
+        fetchMaterials(selectedPosScope);
+        fetchNeracaPos(selectedPosScope);
+        return true;
+      } else {
+        alert(data.message || data.detail || "Gagal menghapus transaksi pos");
+        return false;
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan saat menghapus transaksi pos");
+      return false;
+    }
   };
 
   // ==========================================
@@ -482,6 +510,50 @@ export default function DesktopPortal({
       });
   };
 
+  const handleHapusBarang = (item) => {
+    setConfirmDialog({
+      title: "Hapus Donasi Barang",
+      message: "Apakah Anda yakin ingin menghapus pencatatan donasi barang/natura ini?",
+      confirmText: "Hapus Barang",
+      confirmType: "danger",
+      details: [
+        { label: "Donatur", value: item.nama_donatur },
+        { label: "Barang", value: `${item.nama_barang} (${item.jumlah} ${item.satuan})`, isHighlight: true },
+        { label: "Tanggal", value: item.tanggal }
+      ],
+      onConfirm: async () => {
+        try {
+          await fetch(`${API_BASE}/donation-items/${item.id}`, { method: "DELETE" });
+          fetchBarang();
+        } finally {
+          setConfirmDialog(null);
+        }
+      }
+    });
+  };
+
+  const handleBulkDeleteBarang = async (ids) => {
+    if (!ids || ids.length === 0) return false;
+    try {
+      const res = await fetch(`${API_BASE}/donation-items/bulk-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        fetchBarang();
+        return true;
+      } else {
+        alert(data.message || data.detail || "Gagal menghapus donasi barang");
+        return false;
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan saat menghapus donasi barang");
+      return false;
+    }
+  };
+
   const handleUpdateTransaction = async (e, editData) => {
     e.preventDefault();
     if (!editData || !editData.id) return;
@@ -532,6 +604,31 @@ export default function DesktopPortal({
       } else {
         const data = await res.json();
         alert(data.detail || "Gagal menghapus transaksi");
+        return false;
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan saat menghapus transaksi");
+      return false;
+    }
+  };
+
+  const handleBulkDeleteTransactions = async (ids) => {
+    if (!ids || ids.length === 0) return false;
+    try {
+      const res = await fetch(`${API_BASE}/transactions/bulk-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        fetchTransactions();
+        fetchStats();
+        fetchAccounts();
+        if (selectedPosScope) fetchPosTransactions(selectedPosScope);
+        return true;
+      } else {
+        alert(data.message || data.detail || "Gagal menghapus transaksi");
         return false;
       }
     } catch (err) {
@@ -598,6 +695,7 @@ export default function DesktopPortal({
           setDebtFormDesc("");
           fetchDebts(catId);
           fetchNeracaPos(catId);
+          fetchPosTransactions(catId);
         } else {
           setDebtMsg({ type: "danger", text: data.detail || "Gagal menyimpan" });
         }
@@ -620,11 +718,36 @@ export default function DesktopPortal({
           await fetch(`${API_BASE}/debts/${item.id}`, { method: "DELETE" });
           fetchDebts(selectedPosScope);
           fetchNeracaPos(selectedPosScope);
+          fetchPosTransactions(selectedPosScope);
         } finally {
           setConfirmDialog(null);
         }
       }
     });
+  };
+
+  const handleBulkDeleteDebts = async (ids) => {
+    if (!ids || ids.length === 0) return false;
+    try {
+      const res = await fetch(`${API_BASE}/debts/bulk-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        fetchDebts(selectedPosScope);
+        fetchNeracaPos(selectedPosScope);
+        fetchPosTransactions(selectedPosScope);
+        return true;
+      } else {
+        alert(data.message || data.detail || "Gagal menghapus hutang/piutang");
+        return false;
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan saat menghapus hutang/piutang");
+      return false;
+    }
   };
 
   // ==========================================
@@ -742,6 +865,29 @@ export default function DesktopPortal({
         }
       }
     });
+  };
+
+  const handleBulkDeleteMaterialTx = async (ids) => {
+    if (!ids || ids.length === 0) return false;
+    try {
+      const res = await fetch(`${API_BASE}/materials/transactions/bulk-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        fetchMaterials(selectedPosScope);
+        fetchNeracaPos(selectedPosScope);
+        return true;
+      } else {
+        alert(data.message || data.detail || "Gagal menghapus log material");
+        return false;
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan saat menghapus log material");
+      return false;
+    }
   };
 
   // ==========================================
@@ -932,6 +1078,30 @@ export default function DesktopPortal({
     });
   };
 
+  const handleBulkDeletePos = async (ids) => {
+    if (!ids || ids.length === 0) return false;
+    try {
+      const res = await fetch(`${API_BASE}/categories/bulk-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMasterMsg({ type: "success", text: data.message || "Pos program berhasil dihapus" });
+        fetchCategories();
+        fetchStats();
+        return true;
+      } else {
+        setMasterMsg({ type: "danger", text: data.message || data.detail || "Gagal menghapus pos program" });
+        return false;
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan saat menghapus pos program");
+      return false;
+    }
+  };
+
   const handleTambahRekening = (e) => {
     e.preventDefault();
     setMasterMsg(null);
@@ -959,13 +1129,37 @@ export default function DesktopPortal({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: editAccItem.name,
-        initial_balance: parseFloat(editAccItem.initial_balance || 0)
+        initial_balance: parseFloat(editAccItem.initial_balance || 0),
+        current_balance: editAccItem.current_balance !== undefined && editAccItem.current_balance !== "" && editAccItem.current_balance !== null
+          ? parseFloat(editAccItem.current_balance)
+          : null,
       }),
     }).then(r => r.json()).then(data => {
       setMasterMsg({ type: "success", text: data.message || "Rekening berhasil diperbarui" });
       setEditAccItem(null);
-      fetchAccounts(); fetchStats();
+      fetchAccounts(); fetchStats(); fetchNeraca();
     });
+  };
+
+  const handleRecalculateAccounts = async () => {
+    setMasterMsg(null);
+    try {
+      const res = await fetch(`${API_BASE}/accounts/recalculate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMasterMsg({ type: "success", text: data.message || "Saldo kas berhasil disinkronkan sesuai transaksi" });
+        fetchAccounts();
+        fetchStats();
+        fetchNeraca();
+      } else {
+        setMasterMsg({ type: "danger", text: data.detail || "Gagal menyinkronkan saldo kas" });
+      }
+    } catch (err) {
+      setMasterMsg({ type: "danger", text: "Terjadi kesalahan saat menyinkronkan saldo kas" });
+    }
   };
 
   const handleDeleteRekening = (acc) => {
@@ -996,6 +1190,30 @@ export default function DesktopPortal({
         }
       }
     });
+  };
+
+  const handleBulkDeleteRekening = async (ids) => {
+    if (!ids || ids.length === 0) return false;
+    try {
+      const res = await fetch(`${API_BASE}/accounts/bulk-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMasterMsg({ type: "success", text: data.message || "Rekening berhasil dihapus" });
+        fetchAccounts();
+        fetchStats();
+        return true;
+      } else {
+        setMasterMsg({ type: "danger", text: data.message || data.detail || "Gagal menghapus rekening" });
+        return false;
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan saat menghapus rekening");
+      return false;
+    }
   };
 
   const handleTambahUser = (e) => {
@@ -1075,6 +1293,29 @@ export default function DesktopPortal({
     });
   };
 
+  const handleBulkDeleteUsers = async (ids) => {
+    if (!ids || ids.length === 0) return false;
+    try {
+      const res = await fetch(`${API_BASE}/users/bulk-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMasterMsg({ type: "success", text: data.message || "Pengguna berhasil dihapus" });
+        fetchUsers();
+        return true;
+      } else {
+        setMasterMsg({ type: "danger", text: data.message || data.detail || "Gagal menghapus pengguna" });
+        return false;
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan saat menghapus pengguna");
+      return false;
+    }
+  };
+
   const handleTambahDonatur = (e) => {
     e.preventDefault();
     setMasterMsg(null);
@@ -1133,6 +1374,29 @@ export default function DesktopPortal({
         }
       }
     });
+  };
+
+  const handleBulkDeleteDonatur = async (ids) => {
+    if (!ids || ids.length === 0) return false;
+    try {
+      const res = await fetch(`${API_BASE}/donors/bulk-delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMasterMsg({ type: "success", text: data.message || "Donatur berhasil dihapus" });
+        fetchDonors();
+        return true;
+      } else {
+        setMasterMsg({ type: "danger", text: data.message || data.detail || "Gagal menghapus donatur" });
+        return false;
+      }
+    } catch (err) {
+      alert("Terjadi kesalahan saat menghapus donatur");
+      return false;
+    }
   };
 
   const filteredTransactions = allTransactions.filter(tx => {
@@ -1264,6 +1528,8 @@ export default function DesktopPortal({
               setEditTxItem={setEditTxItem}
               handleUpdateTransaction={handleUpdateTransaction}
               handleDeleteTransaction={handleDeleteTransaction}
+              handleBulkDeleteTransactions={handleBulkDeleteTransactions}
+              setConfirmDialog={setConfirmDialog}
             />
           )}
 
@@ -1279,6 +1545,8 @@ export default function DesktopPortal({
               setPosTxFormTgl={setPosTxFormTgl}
               posTxFormCatType={posTxFormCatType}
               setPosTxFormCatType={setPosTxFormCatType}
+              posTxPaymentStatus={posTxPaymentStatus}
+              setPosTxPaymentStatus={setPosTxPaymentStatus}
               posTxFormType={posTxFormType}
               setPosTxFormType={setPosTxFormType}
               posTxFormAmount={posTxFormAmount}
@@ -1305,6 +1573,8 @@ export default function DesktopPortal({
               isReadOnly={isReadOnly}
               handleSimpanPosTx={handleSimpanPosTx}
               handleHapusPosTx={handleHapusPosTx}
+              handleBulkDeletePosTransactions={handleBulkDeletePosTransactions}
+              setConfirmDialog={setConfirmDialog}
               fetchPosTransactions={fetchPosTransactions}
               fetchDebts={fetchDebts}
             />
@@ -1334,6 +1604,10 @@ export default function DesktopPortal({
               isReadOnly={isReadOnly}
               handleSimpanDebt={handleSimpanDebt}
               handleHapusDebt={handleHapusDebt}
+              handleBulkDeleteDebts={handleBulkDeleteDebts}
+              setConfirmDialog={setConfirmDialog}
+              setActiveMenu={setActiveMenu}
+              fetchDebts={fetchDebts}
             />
           )}
 
@@ -1356,6 +1630,8 @@ export default function DesktopPortal({
               isReadOnly={isReadOnly}
               handleCatatPemakaianMaterial={handleCatatPemakaianMaterial}
               handleHapusMaterialTx={handleHapusMaterialTx}
+              handleBulkDeleteMaterialTx={handleBulkDeleteMaterialTx}
+              setConfirmDialog={setConfirmDialog}
             />
           )}
 
@@ -1438,6 +1714,10 @@ export default function DesktopPortal({
               barangList={barangList}
               setFotoBarang={setFotoBarang}
               handleSimpanBarang={handleSimpanBarang}
+              handleHapusBarang={handleHapusBarang}
+              handleBulkDeleteBarang={handleBulkDeleteBarang}
+              setConfirmDialog={setConfirmDialog}
+              fetchBarang={fetchBarang}
             />
           )}
 
@@ -1459,7 +1739,14 @@ export default function DesktopPortal({
 
           {/* 11. LAPORAN NERACA UMUM */}
           {activeMenu === "neraca" && (
-            <LaporanNeracaUmum neracaData={neracaData} />
+            <LaporanNeracaUmum
+              neracaData={neracaData}
+              fetchNeraca={fetchNeraca}
+              isReadOnly={isReadOnly}
+              setActiveMenu={setActiveMenu}
+              setConfirmDialog={setConfirmDialog}
+              handleRecalculateAccounts={handleRecalculateAccounts}
+            />
           )}
 
           {/* 12. CETAK LAPORAN KEUANGAN */}
@@ -1495,6 +1782,8 @@ export default function DesktopPortal({
               handleTambahPos={handleTambahPos}
               handleUpdatePos={handleUpdatePos}
               handleDeletePos={handleDeletePos}
+              handleBulkDeletePos={handleBulkDeletePos}
+              setConfirmDialog={setConfirmDialog}
             />
           )}
 
@@ -1514,6 +1803,9 @@ export default function DesktopPortal({
               handleTambahRekening={handleTambahRekening}
               handleUpdateRekening={handleUpdateRekening}
               handleDeleteRekening={handleDeleteRekening}
+              handleBulkDeleteRekening={handleBulkDeleteRekening}
+              handleRecalculateAccounts={handleRecalculateAccounts}
+              setConfirmDialog={setConfirmDialog}
             />
           )}
 
@@ -1542,6 +1834,8 @@ export default function DesktopPortal({
               handleTambahUser={handleTambahUser}
               handleUpdateUser={handleUpdateUser}
               handleDeleteUser={handleDeleteUser}
+              handleBulkDeleteUsers={handleBulkDeleteUsers}
+              setConfirmDialog={setConfirmDialog}
             />
           )}
 
@@ -1571,6 +1865,8 @@ export default function DesktopPortal({
               handleTambahDonatur={handleTambahDonatur}
               handleUpdateDonatur={handleUpdateDonatur}
               handleDeleteDonatur={handleDeleteDonatur}
+              handleBulkDeleteDonatur={handleBulkDeleteDonatur}
+              setConfirmDialog={setConfirmDialog}
             />
           )}
         </div>

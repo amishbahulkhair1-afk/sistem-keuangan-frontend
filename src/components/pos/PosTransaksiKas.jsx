@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   IconWallet,
   IconTrendingUp,
@@ -13,6 +13,9 @@ import { formatRupiah } from "../../utils/formatters";
 import CustomDropdown from "../common/CustomDropdown";
 import CustomDatePicker from "../common/CustomDatePicker";
 import TableActionMenu from "../common/TableActionMenu";
+import TablePagination from "../common/TablePagination";
+import BulkActionBar from "../common/BulkActionBar";
+import { useTablePagination } from "../common/useTablePagination";
 
 export default function PosTransaksiKas({
   currentScopedPos,
@@ -24,6 +27,8 @@ export default function PosTransaksiKas({
   setPosTxFormTgl,
   posTxFormCatType,
   setPosTxFormCatType,
+  posTxPaymentStatus = "lunas",
+  setPosTxPaymentStatus,
   posTxFormType,
   setPosTxFormType,
   posTxFormAmount,
@@ -47,13 +52,64 @@ export default function PosTransaksiKas({
   materialsList,
   neracaPosData,
   handleSimpanPosTx,
-  posTxList,
+  posTxList = [],
   handleHapusPosTx,
+  handleBulkDeletePosTransactions,
+  setConfirmDialog,
   fetchPosTransactions,
   fetchDebts
 }) {
   const [tableFontSize, setTableFontSize] = useState("compact");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+
+  const {
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems,
+    displayStart,
+    displayEnd,
+    paginatedItems,
+    selectedIds,
+    selectedCount,
+    isAllSelected,
+    isSomeSelected,
+    toggleSelect,
+    toggleSelectAll,
+    selectAllFiltered,
+    clearSelection
+  } = useTablePagination(posTxList, 10);
+
+  const handleTriggerBulkDelete = () => {
+    if (selectedCount === 0) return;
+    if (setConfirmDialog) {
+      setConfirmDialog({
+        title: `Hapus ${selectedCount} Transaksi Pos Terpilih`,
+        message: `Apakah Anda yakin ingin menghapus ${selectedCount} transaksi pos yang dipilih secara permanen?`,
+        confirmText: `Hapus ${selectedCount} Transaksi Pos`,
+        confirmType: "danger",
+        details: [
+          { label: "Pos Program", value: currentScopedPos?.name || "Pos Saat Ini" },
+          { label: "Jumlah Transaksi Terpilih", value: `${selectedCount} transaksi`, isHighlight: true },
+        ],
+        onConfirm: async () => {
+          setIsBulkDeleting(true);
+          try {
+            if (handleBulkDeletePosTransactions) {
+              const ok = await handleBulkDeletePosTransactions(Array.from(selectedIds));
+              if (ok) clearSelection();
+            }
+          } finally {
+            setIsBulkDeleting(false);
+            setConfirmDialog(null);
+          }
+        }
+      });
+    }
+  };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -65,6 +121,46 @@ export default function PosTransaksiKas({
   const neracaBiayaItems = neracaPosData?.aktiva?.biaya_operasional || [];
   const neracaHutangItems = neracaPosData?.passiva?.kewajiban || [];
   const neracaModalItems = neracaPosData?.passiva?.modal_dan_pendapatan || [];
+
+  // Standar opsi biaya pengeluaran agar selalu tersedia
+  const standardBiayaCodes = ["belanja_material", "upah_tukang", "operasional_lapangan", "sewa_alat", "biaya_umum", "biaya_lainnya"];
+  const customBiayaOptions = neracaBiayaItems
+    .filter(b => !standardBiayaCodes.includes(b.code) && !standardBiayaCodes.includes(b.name))
+    .map(b => ({
+      value: b.code || b.name,
+      label: `[${b.code}] ${b.name}`,
+      badge: "Aktiva / Biaya"
+    }));
+
+  // Daftar nama pihak/toko yang sudah pernah ada untuk saran otomatis (autocompletion)
+  const knownParties = useMemo(() => {
+    const set = new Set();
+    debtsRecap?.hutang_list?.forEach(h => h.party_name && set.add(h.party_name.trim()));
+    debtsRecap?.piutang_list?.forEach(p => p.party_name && set.add(p.party_name.trim()));
+    posTxList?.forEach(t => t.recipient_or_sender && t.recipient_or_sender !== '-' && set.add(t.recipient_or_sender.trim()));
+    return Array.from(set);
+  }, [debtsRecap, posTxList]);
+
+  const allCategoryOptions = [
+    { value: "belanja_material", label: "Belanja Material / Logistik Lapangan", badge: "Pengeluaran" },
+    { value: "upah_tukang", label: "Upah Tukang & Tenaga Kerja", badge: "Pengeluaran" },
+    { value: "operasional_lapangan", label: "Operasional Lapangan & Transport", badge: "Pengeluaran" },
+    { value: "sewa_alat", label: "Sewa Alat & Perlengkapan", badge: "Pengeluaran" },
+    { value: "biaya_umum", label: "Biaya Umum & Administrasi", badge: "Pengeluaran" },
+    { value: "biaya_lainnya", label: "Biaya Lainnya", badge: "Pengeluaran" },
+    ...customBiayaOptions,
+    { value: "hutang_bayar", label: "Hutang: Bayar Cicilan / Pelunasan (Kas Keluar)", badge: "Hutang/Piutang" },
+    { value: "piutang_pinjam", label: "Piutang: Memberi Pinjaman ke Pihak Lain (Kas Keluar)", badge: "Hutang/Piutang" },
+    { value: "hutang_pinjam", label: "Hutang: Terima Pinjaman Dana Baru (Kas Masuk)", badge: "Hutang/Piutang" },
+    { value: "piutang_bayar", label: "Piutang: Terima Pembayaran Piutang (Kas Masuk)", badge: "Hutang/Piutang" },
+    { value: "alokasi_pusat", label: "Alokasi Kas dari Donasi Pusat (DONASI)", badge: "Pemasukan Pos" },
+    { value: "pendapatan_pos_langsung", label: "Penerimaan Langsung Pos / Donasi Pos", badge: "Pemasukan Pos" },
+    ...neracaModalItems.map((m) => ({
+      value: m.code || m.name,
+      label: `[${m.code}] ${m.name}`,
+      badge: "Passiva / Modal"
+    }))
+  ];
 
   // Deteksi apakah kategori transaksi yang dipilih berkaitan dengan Material / Belanja Barang
   const selectedItem = neracaBiayaItems.find(
@@ -182,24 +278,7 @@ export default function PosTransaksiKas({
                   }}
                   searchable={true}
                   searchPlaceholder="Cari kategori kas..."
-                  options={[
-                    { value: "hutang_bayar", label: "Hutang: Bayar Cicilan / Pelunasan (Kas Keluar)", badge: "Pengeluaran" },
-                    { value: "piutang_pinjam", label: "Piutang: Memberi Pinjaman ke Pihak Lain (Kas Keluar)", badge: "Pengeluaran" },
-                    ...neracaBiayaItems.map((b) => ({
-                      value: b.code || b.name,
-                      label: `[${b.code}] ${b.name}`,
-                      badge: "Aktiva / Biaya"
-                    })),
-                    { value: "alokasi_pusat", label: "Alokasi Kas dari Donasi Pusat (DONASI)", badge: "Pemasukan" },
-                    { value: "pendapatan_pos_langsung", label: "Penerimaan Langsung Pos / Donasi Pos", badge: "Pemasukan" },
-                    { value: "hutang_pinjam", label: "Hutang: Terima Pinjaman Dana (Kas Masuk)", badge: "Pemasukan" },
-                    { value: "piutang_bayar", label: "Piutang: Terima Pembayaran Piutang (Kas Masuk)", badge: "Pemasukan" },
-                    ...neracaModalItems.map((m) => ({
-                      value: m.code || m.name,
-                      label: `[${m.code}] ${m.name}`,
-                      badge: "Passiva / Modal"
-                    }))
-                  ]}
+                  options={allCategoryOptions}
                 />
               </div>
             </div>
@@ -245,12 +324,91 @@ export default function PosTransaksiKas({
               <input
                 className="form-control"
                 type="text"
-                placeholder={isMaterialCategory ? "Contoh: Toko Bangunan Berkah / TB Sumber Rejeki" : "Contoh: Toko Bangunan Berkah / Kak Affan / Tukang Pak Mat"}
+                list="pos-party-datalist"
+                placeholder={isMaterialCategory ? "Contoh: Pujasera / Toko Bangunan Berkah" : "Contoh: Pujasera / Kak Affan / Tukang Pak Mat"}
                 value={posTxFormParty}
                 onChange={e => setPosTxFormParty(e.target.value)}
                 required={posTxFormCatType.startsWith("hutang") || posTxFormCatType.startsWith("piutang")}
               />
+              <datalist id="pos-party-datalist">
+                {knownParties.map((p, idx) => (
+                  <option key={idx} value={p} />
+                ))}
+              </datalist>
             </div>
+
+            {/* Pilihan Metode Pembayaran Belanja / Beban (Lunas vs Tempo/Hutang) */}
+            {posTxFormType === "expense" && !posTxFormCatType.startsWith("hutang") && !posTxFormCatType.startsWith("piutang") && (
+              <div
+                style={{
+                  background: posTxPaymentStatus === "hutang" ? "#fffbeb" : "#f8fafc",
+                  padding: "12px 14px",
+                  borderRadius: "8px",
+                  border: posTxPaymentStatus === "hutang" ? "1px solid #fde68a" : "1px solid #e2e8f0",
+                  marginBottom: "16px"
+                }}
+              >
+                <label className="form-label" style={{ fontSize: "13px", fontWeight: "700", marginBottom: "8px", color: posTxPaymentStatus === "hutang" ? "#b45309" : "#334155" }}>
+                  Status Pembayaran Beban / Belanja:
+                </label>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      padding: "8px 12px",
+                      borderRadius: "6px",
+                      border: posTxPaymentStatus === "lunas" ? "2px solid #0284c7" : "1px solid #cbd5e1",
+                      background: posTxPaymentStatus === "lunas" ? "#f0f9ff" : "#fff",
+                      cursor: "pointer",
+                      fontSize: "13px",
+                      fontWeight: posTxPaymentStatus === "lunas" ? "700" : "500",
+                      color: posTxPaymentStatus === "lunas" ? "#0369a1" : "inherit"
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      name="posTxPaymentStatus"
+                      value="lunas"
+                      checked={posTxPaymentStatus === "lunas"}
+                      onChange={() => setPosTxPaymentStatus("lunas")}
+                    />
+                    <span>Kas Tunai / Bank (Lunas)</span>
+                  </label>
+
+                  <label
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      padding: "8px 12px",
+                      borderRadius: "6px",
+                      border: posTxPaymentStatus === "hutang" ? "2px solid #d97706" : "1px solid #cbd5e1",
+                      background: posTxPaymentStatus === "hutang" ? "#fef3c7" : "#fff",
+                      cursor: "pointer",
+                      fontSize: "13px",
+                      fontWeight: posTxPaymentStatus === "hutang" ? "700" : "500",
+                      color: posTxPaymentStatus === "hutang" ? "#b45309" : "inherit"
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      name="posTxPaymentStatus"
+                      value="hutang"
+                      checked={posTxPaymentStatus === "hutang"}
+                      onChange={() => setPosTxPaymentStatus("hutang")}
+                    />
+                    <span>Hutang / Kasbon (Belum Lunas)</span>
+                  </label>
+                </div>
+                {posTxPaymentStatus === "hutang" && (
+                  <p style={{ fontSize: "11px", color: "#92400e", marginTop: "8px", marginBottom: 0, lineHeight: 1.4 }}>
+                    ℹ️ <strong>Otomatis Terintegrasi:</strong> Belanja ini akan otomatis tercatat sebagai kewajiban hutang yang belum lunas pada menu <strong>Hutang & Piutang Pos</strong> kepada pihak {posTxFormParty || "toko/supplier"}.
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Input Material / Logistik Lapangan Otomatis (Tampil saat kategori Material) */}
             {isMaterialCategory && (
@@ -454,10 +612,33 @@ export default function PosTransaksiKas({
             />
           </div>
 
+          <BulkActionBar
+            selectedCount={selectedCount}
+            totalItems={posTxList.length}
+            paginatedCount={paginatedItems.length}
+            entityName="transaksi pos"
+            onClearSelection={clearSelection}
+            onSelectAllFiltered={selectAllFiltered}
+            onBulkDelete={handleTriggerBulkDelete}
+            isDeleting={isBulkDeleting}
+          />
+
           <div className={`table-responsive-desktop table-font-${tableFontSize}`}>
             <table className={`portal-table table-font-${tableFontSize}`}>
               <thead>
                 <tr>
+                  <th style={{ width: "40px", textAlign: "center" }}>
+                    <input
+                      type="checkbox"
+                      className="portal-checkbox"
+                      title="Pilih Semua di Halaman Ini"
+                      checked={isAllSelected}
+                      ref={(el) => {
+                        if (el) el.indeterminate = isSomeSelected;
+                      }}
+                      onChange={toggleSelectAll}
+                    />
+                  </th>
                   <th>Tanggal</th>
                   <th>Kategori</th>
                   <th>Uraian & Pihak</th>
@@ -466,22 +647,40 @@ export default function PosTransaksiKas({
                 </tr>
               </thead>
               <tbody>
-                {posTxList.length === 0 ? (
+                {paginatedItems.length === 0 ? (
                   <tr>
-                    <td colSpan={5} style={{ textAlign: "center", padding: "24px", color: "var(--text-muted)" }}>
+                    <td colSpan={6} style={{ textAlign: "center", padding: "24px", color: "var(--text-muted)" }}>
                       Belum ada transaksi tercatat untuk pos {currentScopedPos?.name}.
                     </td>
                   </tr>
                 ) : (
-                  posTxList.map(t => {
+                  paginatedItems.map(t => {
                     const isDebtOrPiutang = t.category_tx_type?.startsWith("hutang") || t.category_tx_type?.startsWith("piutang");
                     return (
-                      <tr key={t.id}>
+                      <tr key={t.id} className={selectedIds.has(t.id) ? "row-selected" : ""}>
+                        <td style={{ textAlign: "center" }}>
+                          <input
+                            type="checkbox"
+                            className="portal-checkbox"
+                            checked={selectedIds.has(t.id)}
+                            onChange={() => toggleSelect(t.id)}
+                          />
+                        </td>
                         <td><code>{t.transaction_date}</code></td>
                         <td>
                           <span className={`badge-tag ${isDebtOrPiutang ? 'badge-pos' : t.type === 'income' ? 'badge-income' : 'badge-expense'}`}>
                             {t.category_tx_type.replace(/_/g, ' ').toUpperCase()}
                           </span>
+                          {t.payment_status === 'hutang' && (
+                            <span className="badge-tag" style={{ marginLeft: "4px", fontSize: "10px", background: "#fef3c7", color: "#b45309", border: "1px solid #fde68a", fontWeight: "700" }}>
+                              HUTANG / TEMPO
+                            </span>
+                          )}
+                          {(isDebtOrPiutang || t.source_debt_tx_id) && (
+                            <span className="badge-tag" style={{ marginLeft: "4px", fontSize: "10px", background: "#e0e7ff", color: "#3730a3", border: "1px solid #c7d2fe" }}>
+                              SYNC HUTANG/PIUTANG
+                            </span>
+                          )}
                         </td>
                         <td>
                           <strong style={{ display: "block" }}>{t.description}</strong>
@@ -509,6 +708,17 @@ export default function PosTransaksiKas({
               </tbody>
             </table>
           </div>
+
+          <TablePagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={posTxList.length}
+            displayStart={displayStart}
+            displayEnd={displayEnd}
+            pageSize={pageSize}
+            onPageSizeChange={setPageSize}
+            onPageChange={setCurrentPage}
+          />
         </div>
       </div>
     </div>

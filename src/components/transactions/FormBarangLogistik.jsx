@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { IconPackage, IconCheckCircle } from "../../Icons";
+import { IconPackage, IconCheckCircle, IconTrash } from "../../Icons";
 import CustomDropdown from "../common/CustomDropdown";
 import CustomDatePicker from "../common/CustomDatePicker";
 import TableActionMenu from "../common/TableActionMenu";
+import TablePagination from "../common/TablePagination";
+import BulkActionBar from "../common/BulkActionBar";
+import { useTablePagination } from "../common/useTablePagination";
 
 export default function FormBarangLogistik({
   barangMessage,
@@ -25,9 +28,68 @@ export default function FormBarangLogistik({
   posBarang,
   setPosBarang,
   setFotoBarang,
-  barangList = []
+  barangList = [],
+  handleHapusBarang,
+  handleBulkDeleteBarang,
+  setConfirmDialog,
+  fetchBarang
 }) {
   const [tableFontSize, setTableFontSize] = useState("compact");
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const {
+    currentPage,
+    setCurrentPage,
+    pageSize,
+    setPageSize,
+    totalPages,
+    totalItems,
+    displayStart,
+    displayEnd,
+    paginatedItems,
+    selectedIds,
+    selectedCount,
+    isAllSelected,
+    isSomeSelected,
+    toggleSelect,
+    toggleSelectAll,
+    selectAllFiltered,
+    clearSelection
+  } = useTablePagination(barangList, 10);
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    if (fetchBarang) await fetchBarang();
+    setIsRefreshing(false);
+  };
+
+  const handleTriggerBulkDelete = () => {
+    if (selectedCount === 0) return;
+    if (setConfirmDialog) {
+      setConfirmDialog({
+        title: `Hapus ${selectedCount} Donasi Barang Terpilih`,
+        message: `Apakah Anda yakin ingin menghapus ${selectedCount} data donasi barang terpilih secara permanen?`,
+        confirmText: `Hapus ${selectedCount} Barang`,
+        confirmType: "danger",
+        details: [
+          { label: "Jumlah Item Terpilih", value: `${selectedCount} item`, isHighlight: true }
+        ],
+        onConfirm: async () => {
+          setIsBulkDeleting(true);
+          try {
+            if (handleBulkDeleteBarang) {
+              const ok = await handleBulkDeleteBarang(Array.from(selectedIds));
+              if (ok) clearSelection();
+            }
+          } finally {
+            setIsBulkDeleting(false);
+            setConfirmDialog(null);
+          }
+        }
+      });
+    }
+  };
   return (
     <div className="desktop-2col-grid">
       <div className="desktop-panel" style={{ maxWidth: "800px", margin: "0 auto" }}>
@@ -124,14 +186,40 @@ export default function FormBarangLogistik({
             <IconPackage size={18} color="var(--primary)" /> Riwayat Penerimaan Barang ({barangList.length})
           </h3>
           <TableActionMenu
+            onRefresh={handleRefresh}
+            isRefreshing={isRefreshing}
             fontSize={tableFontSize}
             onFontSizeChange={setTableFontSize}
           />
         </div>
+
+        <BulkActionBar
+          selectedCount={selectedCount}
+          totalItems={barangList.length}
+          paginatedCount={paginatedItems.length}
+          entityName="donasi barang"
+          onClearSelection={clearSelection}
+          onSelectAllFiltered={selectAllFiltered}
+          onBulkDelete={handleTriggerBulkDelete}
+          isDeleting={isBulkDeleting}
+        />
+
         <div className={`table-responsive-desktop table-font-${tableFontSize}`}>
           <table className={`portal-table table-font-${tableFontSize}`}>
             <thead>
               <tr>
+                <th style={{ width: "40px", textAlign: "center" }}>
+                  <input
+                    type="checkbox"
+                    className="portal-checkbox"
+                    title="Pilih Semua di Halaman Ini"
+                    checked={isAllSelected}
+                    ref={(el) => {
+                      if (el) el.indeterminate = isSomeSelected;
+                    }}
+                    onChange={toggleSelectAll}
+                  />
+                </th>
                 <th>Tanggal</th>
                 <th>Donatur</th>
                 <th>Pos Program</th>
@@ -139,33 +227,73 @@ export default function FormBarangLogistik({
                 <th>Barang & Jumlah</th>
                 <th>Keterangan</th>
                 <th>Bukti</th>
+                <th style={{ textAlign: "center", width: "80px" }}>Aksi</th>
               </tr>
             </thead>
             <tbody>
-              {barangList.map((b) => (
-                <tr key={b.id}>
-                  <td><code>{b.tanggal}</code></td>
-                  <td style={{ fontWeight: "700" }}>{b.nama_donatur}</td>
-                  <td>
-                    {b.pos_code && b.pos_code !== "-" ? (
-                      <span className="badge-tag badge-pos">{b.pos_code}</span>
-                    ) : (
-                      <span style={{ color: "var(--text-muted)", fontSize: "11px" }}>-</span>
-                    )}
-                  </td>
-                  <td><span className="badge-tag">{b.kategori_barang}</span></td>
-                  <td style={{ fontWeight: "700" }}>{b.nama_barang} ({b.jumlah} {b.satuan})</td>
-                  <td>{b.keterangan || "-"}</td>
-                  <td>
-                    {b.bukti_foto ? (
-                      <a href={b.bukti_foto} target="_blank" rel="noreferrer" className="btn-foto-link">Lihat Bukti</a>
-                    ) : "-"}
+              {paginatedItems.length === 0 ? (
+                <tr>
+                  <td colSpan={9} style={{ textAlign: "center", padding: "24px", color: "var(--text-muted)" }}>
+                    Belum ada riwayat donasi barang / natura.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                paginatedItems.map((b) => (
+                  <tr key={b.id} className={selectedIds.has(b.id) ? "row-selected" : ""}>
+                    <td style={{ textAlign: "center" }}>
+                      <input
+                        type="checkbox"
+                        className="portal-checkbox"
+                        checked={selectedIds.has(b.id)}
+                        onChange={() => toggleSelect(b.id)}
+                      />
+                    </td>
+                    <td><code>{b.tanggal}</code></td>
+                    <td style={{ fontWeight: "700" }}>{b.nama_donatur}</td>
+                    <td>
+                      {b.pos_code && b.pos_code !== "-" ? (
+                        <span className="badge-tag badge-pos">{b.pos_code}</span>
+                      ) : (
+                        <span style={{ color: "var(--text-muted)", fontSize: "11px" }}>-</span>
+                      )}
+                    </td>
+                    <td><span className="badge-tag">{b.kategori_barang}</span></td>
+                    <td style={{ fontWeight: "700" }}>{b.nama_barang} ({b.jumlah} {b.satuan})</td>
+                    <td>{b.keterangan || "-"}</td>
+                    <td>
+                      {b.bukti_foto ? (
+                        <a href={b.bukti_foto} target="_blank" rel="noreferrer" className="btn-foto-link">Lihat Bukti</a>
+                      ) : "-"}
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      {handleHapusBarang && (
+                        <button
+                          type="button"
+                          title="Hapus Donasi Barang"
+                          onClick={() => handleHapusBarang(b)}
+                          style={{ background: "#fee2e2", color: "#b91c1c", border: "none", padding: "4px 8px", borderRadius: "6px", cursor: "pointer" }}
+                        >
+                          <IconTrash size={14} />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
+
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={barangList.length}
+          displayStart={displayStart}
+          displayEnd={displayEnd}
+          pageSize={pageSize}
+          onPageSizeChange={setPageSize}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );
