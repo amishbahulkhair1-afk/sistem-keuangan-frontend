@@ -110,11 +110,16 @@ function App() {
       body: JSON.stringify({ email, password, client: "web" }),
     })
       .then(async (r) => {
-        const data = await r.json();
-        return { ok: r.ok, data };
+        let data;
+        try {
+          data = await r.json();
+        } catch {
+          data = { message: `Respon server tidak valid (HTTP ${r.status})` };
+        }
+        return { ok: r.ok, data, status: r.status };
       })
-      .then(({ data }) => {
-        if (data.token) {
+      .then(({ ok, data, status }) => {
+        if (ok && data.token) {
           const userRole = data.user?.role;
           const isAllowed = userRole === "admin" || userRole === "admin_keuangan" || userRole === "pimpinan";
           if (!isAllowed) {
@@ -126,10 +131,12 @@ function App() {
           setToken(data.token);
           setUser(data.user);
         } else {
-          setAuthError(data.detail || "Login gagal");
+          setAuthError(data.message || data.detail || `Login gagal (Status ${status})`);
         }
       })
-      .catch(() => setAuthError("Gagal menghubungi server backend"));
+      .catch((err) => {
+        setAuthError(err?.message ? `Gagal menghubungi server backend: ${err.message}` : "Gagal menghubungi server backend");
+      });
   };
 
   const switchMode = (mode) => {

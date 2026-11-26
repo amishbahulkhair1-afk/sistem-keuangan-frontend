@@ -1,10 +1,12 @@
-export const API_BASE =
+const rawApiBase =
   import.meta.env.VITE_API_BASE_URL ||
   (typeof window !== "undefined" &&
    window.location.hostname !== "localhost" &&
    window.location.hostname !== "127.0.0.1"
-    ? "/backend_donasi/api"
+    ? "https://backend-donasi.annuqayahlatee.id/api"
     : "/api");
+
+export const API_BASE = rawApiBase.replace(/\/+$/, "");
 
 export const formatRupiah = (val) =>
   new Intl.NumberFormat("id-ID", {
