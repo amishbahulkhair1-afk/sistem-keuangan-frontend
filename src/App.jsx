@@ -10,7 +10,27 @@ import "./App.css";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user") || "null"));
+  const [user, setUser] = useState(() => {
+    try {
+      const raw = localStorage.getItem("user");
+      return raw && raw !== "undefined" ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  // Auth States
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState(null);
+
+  const handleLogout = () => {
+    fetch(`${API_BASE}/logout`, { method: "POST" }).catch(() => {});
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setToken(null);
+    setUser(null);
+  };
 
   // Sistem Ukuran Font Global
   const [systemFontSize, setSystemFontSize] = useState(getSavedSystemFontSize());
@@ -78,11 +98,6 @@ function App() {
     }
   }, [user]);
 
-  // Auth States
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [authError, setAuthError] = useState(null);
-
   const handleLogin = (e) => {
     e.preventDefault();
     setAuthError(null);
@@ -98,7 +113,7 @@ function App() {
         const data = await r.json();
         return { ok: r.ok, data };
       })
-      .then(({ ok, data }) => {
+      .then(({ data }) => {
         if (data.token) {
           const userRole = data.user?.role;
           const isAllowed = userRole === "admin" || userRole === "admin_keuangan" || userRole === "pimpinan";
@@ -115,14 +130,6 @@ function App() {
         }
       })
       .catch(() => setAuthError("Gagal menghubungi server backend"));
-  };
-
-  const handleLogout = () => {
-    fetch(`${API_BASE}/logout`, { method: "POST" }).catch(() => {});
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setToken(null);
-    setUser(null);
   };
 
   const switchMode = (mode) => {
