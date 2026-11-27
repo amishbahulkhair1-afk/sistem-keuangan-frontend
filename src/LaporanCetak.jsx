@@ -112,6 +112,10 @@ export default function LaporanCetak({ categories: propsCategories = [], account
 
   const handleOpenPdf = (reportId) => {
     const token = localStorage.getItem("token") || "";
+    if (!token) {
+      alert("Sesi login tidak ditemukan atau telah berakhir. Silakan login kembali untuk mencetak dokumen.");
+      return;
+    }
     let url = `${API_BASE}/reports/pdf/${reportId}?year=${year}&month=${month}&token=${encodeURIComponent(token)}`;
     if (filterMode === "range") {
       url += `&start_date=${startDate}&end_date=${endDate}`;

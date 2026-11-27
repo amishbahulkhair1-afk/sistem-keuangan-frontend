@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { createPortal } from "react-dom";
-import { IconPlusCircle, IconCheckCircle, IconBank, IconEdit, IconTrash } from "../../Icons";
+import { IconPlusCircle, IconCheckCircle, IconBank, IconEdit, IconTrash, IconRefresh } from "../../Icons";
 import { formatRupiah } from "../../utils/formatters";
 import TableActionMenu from "../common/TableActionMenu";
 import TablePagination from "../common/TablePagination";
@@ -24,7 +24,8 @@ export default function MasterRekening({
   handleRecalculateAccounts,
   setConfirmDialog,
   editAccItem,
-  handleUpdateRekening
+  handleUpdateRekening,
+  isRecalculating = false,
 }) {
   const [tableFontSize, setTableFontSize] = useState("compact");
   const [isBulkDeleting, setIsBulkDeleting] = useState(false);
@@ -141,12 +142,28 @@ export default function MasterRekening({
             {!isReadOnly && handleRecalculateAccounts && (
               <button
                 type="button"
-                className="btn-secondary"
-                style={{ fontSize: "12px", padding: "6px 12px" }}
+                className="btn-secondary-action"
+                disabled={isRecalculating}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "7px",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  padding: "7px 13px",
+                  borderRadius: "8px",
+                  background: "#ffffff",
+                  color: "#0369a1",
+                  border: "1.5px solid #bae6fd",
+                  boxShadow: "0 1px 4px rgba(2, 132, 199, 0.08)",
+                  cursor: isRecalculating ? "wait" : "pointer",
+                  transition: "all 0.2s ease",
+                }}
                 onClick={handleRecalculateAccounts}
                 title="Hitung ulang seluruh saldo kas dan bank agar cocok dengan transaksi yang ada atau kosongkan jika tidak ada transaksi"
               >
-                🔄 Sinkronkan / Kosongkan Saldo
+                <IconRefresh size={14} className={isRecalculating ? "spin-animate" : ""} />
+                <span>{isRecalculating ? "Menyinkronkan..." : "Sinkronkan / Kosongkan Kas"}</span>
               </button>
             )}
             <TableActionMenu

@@ -1,7 +1,7 @@
 import { IconBook, IconRefresh } from "../../Icons";
 import { formatRupiah, formatPosNameShort } from "../../utils/formatters";
 
-export default function BukuPembantu({ bukuBantuData, fetchBukuBantu }) {
+export default function BukuPembantu({ bukuBantuData, fetchBukuBantu, categories = [] }) {
   return (
     <div className="desktop-panel">
       <div className="panel-header">
@@ -49,18 +49,28 @@ export default function BukuPembantu({ bukuBantuData, fetchBukuBantu }) {
             </tr>
           </thead>
           <tbody>
-            {bukuBantuData?.rows?.map(r => (
-              <tr key={r.pos_id}>
-                <td style={{ fontWeight: "700" }}>
-                  <span className="text-full">{r.nama_pos}</span>
-                  <span className="text-compact" title={r.nama_pos}>{formatPosNameShort(r.nama_pos)}</span>
-                </td>
-                <td style={{ textAlign: "right" }}>{formatRupiah(r.saldo_bulan_lalu)}</td>
-                <td style={{ textAlign: "right", color: "var(--success-text)", fontWeight: "600" }}>{formatRupiah(r.mutasi_masuk_bulan_ini)}</td>
-                <td style={{ textAlign: "right", color: "var(--danger-text)", fontWeight: "600" }}>{formatRupiah(r.mutasi_keluar_bulan_ini)}</td>
-                <td style={{ textAlign: "right", fontWeight: "800", color: "var(--primary)" }}>{formatRupiah(r.saldo_akhir)}</td>
-              </tr>
-            ))}
+            {bukuBantuData?.rows?.map(r => {
+              const matchedCat = categories.find(c => c.id === r.pos_id || c.id === r.category_id || (r.pos_code && c.code === r.pos_code));
+              const posName = r.pos_name || r.nama_pos || matchedCat?.name || matchedCat?.nama_kategori || "-";
+              const posCode = (r.pos_code || matchedCat?.code) ? `[${r.pos_code || matchedCat?.code}] ` : "";
+              const saldoLalu = r.saldo_lalu ?? r.saldo_bulan_lalu ?? 0;
+              const mutasiMasuk = r.mutasi_masuk ?? r.mutasi_masuk_bulan_ini ?? 0;
+              const mutasiKeluar = r.mutasi_keluar ?? r.mutasi_keluar_bulan_ini ?? 0;
+              const saldoAkhir = r.saldo_akhir ?? 0;
+
+              return (
+                <tr key={r.pos_id}>
+                  <td style={{ fontWeight: "700" }}>
+                    <span className="text-full">{posCode}{posName}</span>
+                    <span className="text-compact" title={`${posCode}${posName}`}>{posCode}{formatPosNameShort(posName)}</span>
+                  </td>
+                  <td style={{ textAlign: "right" }}>{formatRupiah(saldoLalu)}</td>
+                  <td style={{ textAlign: "right", color: "var(--success-text)", fontWeight: "600" }}>{formatRupiah(mutasiMasuk)}</td>
+                  <td style={{ textAlign: "right", color: "var(--danger-text)", fontWeight: "600" }}>{formatRupiah(mutasiKeluar)}</td>
+                  <td style={{ textAlign: "right", fontWeight: "800", color: "var(--primary)" }}>{formatRupiah(saldoAkhir)}</td>
+                </tr>
+              );
+            })}
             <tr style={{ background: "var(--surface-subtle)", fontWeight: "800" }}>
               <td>
                 <span className="text-full">TOTAL KESELURUHAN</span>

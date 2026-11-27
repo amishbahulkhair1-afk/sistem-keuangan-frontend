@@ -35,6 +35,7 @@ import DonaturPosView from "./components/donatur/DonaturPosView";
 import DonaturDashboard from "./components/dashboard/DonaturDashboard";
 import DynamicBackgroundCanvas from "./components/common/DynamicBackgroundCanvas";
 import ConfirmModal from "./components/common/ConfirmModal";
+import ErrorBoundary from "./components/common/ErrorBoundary";
 
 export default function DesktopPortal({
   user,
@@ -213,6 +214,8 @@ export default function DesktopPortal({
   const [editDonorItem, setEditDonorItem] = useState(null);
   const [editTxItem, setEditTxItem] = useState(null);
   const [masterMsg, setMasterMsg] = useState(null);
+  const [neracaNotice, setNeracaNotice] = useState(null);
+  const [recalculatingKas, setRecalculatingKas] = useState(false);
 
   // Line Chart State (monthly | yearly)
   const [chartTimeFrame, setChartTimeFrame] = useState("monthly");
@@ -278,7 +281,17 @@ export default function DesktopPortal({
     fetch(url).then(r => r.json()).then(setDonorsList);
   };
   const fetchBukuBantu = () => fetch(`${API_BASE}/reports/buku-bantu`).then(r => r.json()).then(setBukuBantuData);
-  const fetchNeraca = () => fetch(`${API_BASE}/reports/neraca`).then(r => r.json()).then(setNeracaData);
+  const fetchNeraca = () => {
+    fetch(`${API_BASE}/reports/neraca`)
+      .then(async (r) => {
+        if (!r.ok) return null;
+        try { return await r.json(); } catch { return null; }
+      })
+      .then((data) => {
+        if (data) setNeracaData(data);
+      })
+      .catch((err) => console.error("fetchNeraca error:", err));
+  };
   const fetchUsers = () => fetch(`${API_BASE}/users`).then(r => r.json()).then(setUsersList);
 
   // Fetch Debts
@@ -431,6 +444,18 @@ export default function DesktopPortal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids }),
       });
+      if (res.status === 404 || res.status === 405) {
+        const results = await Promise.all(
+          ids.map(id => fetch(`${API_BASE}/pos-transactions/${id}`, { method: "DELETE" }))
+        );
+        if (results.every(r => r.ok)) {
+          fetchPosTransactions(selectedPosScope);
+          fetchDebts(selectedPosScope);
+          fetchMaterials(selectedPosScope);
+          fetchNeracaPos(selectedPosScope);
+          return true;
+        }
+      }
       const data = await res.json();
       if (res.ok) {
         fetchPosTransactions(selectedPosScope);
@@ -540,6 +565,15 @@ export default function DesktopPortal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids }),
       });
+      if (res.status === 404 || res.status === 405) {
+        const results = await Promise.all(
+          ids.map(id => fetch(`${API_BASE}/donation-items/${id}`, { method: "DELETE" }))
+        );
+        if (results.every(r => r.ok)) {
+          fetchBarang();
+          return true;
+        }
+      }
       const data = await res.json();
       if (res.ok) {
         fetchBarang();
@@ -593,8 +627,15 @@ export default function DesktopPortal({
     if (!tx || !tx.id) return;
     try {
       const res = await fetch(`${API_BASE}/transactions/${tx.id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: { "Accept": "application/json" }
       });
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        data = { message: `HTTP ${res.status}: ${res.statusText || "Gagal"}` };
+      }
       if (res.ok) {
         fetchTransactions();
         fetchStats();
@@ -602,12 +643,11 @@ export default function DesktopPortal({
         if (selectedPosScope) fetchPosTransactions(selectedPosScope);
         return true;
       } else {
-        const data = await res.json();
-        alert(data.detail || "Gagal menghapus transaksi");
+        alert(data.message || data.detail || `Gagal menghapus transaksi (Status ${res.status})`);
         return false;
       }
     } catch (err) {
-      alert("Terjadi kesalahan saat menghapus transaksi");
+      alert(`Terjadi kesalahan saat menghapus transaksi: ${err?.message || err}`);
       return false;
     }
   };
@@ -617,22 +657,64 @@ export default function DesktopPortal({
     try {
       const res = await fetch(`${API_BASE}/transactions/bulk-delete`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({ ids }),
       });
-      const data = await res.json();
+
       if (res.ok) {
         fetchTransactions();
         fetchStats();
         fetchAccounts();
         if (selectedPosScope) fetchPosTransactions(selectedPosScope);
         return true;
-      } else {
-        alert(data.message || data.detail || "Gagal menghapus transaksi");
-        return false;
       }
+
+      // Fallback otomatis jika endpoint bulk-delete belum ter-deploy di server backend
+      if (res.status === 404 || res.status === 405) {
+        let anySuccess = false;
+        const deleteErrors = [];
+        for (const id of ids) {
+          try {
+            const delRes = await fetch(`${API_BASE}/transactions/${id}`, {
+              method: "DELETE",
+              headers: { "Accept": "application/json" }
+            });
+            if (delRes.ok) {
+              anySuccess = true;
+            } else {
+              let errData;
+              try { errData = await delRes.json(); } catch { errData = {}; }
+              deleteErrors.push(`ID ${id}: ${errData.message || errData.detail || "HTTP " + delRes.status}`);
+            }
+          } catch (e) {
+            deleteErrors.push(`ID ${id}: ${e.message}`);
+          }
+        }
+
+        if (anySuccess) {
+          fetchTransactions();
+          fetchStats();
+          fetchAccounts();
+          if (selectedPosScope) fetchPosTransactions(selectedPosScope);
+        }
+
+        if (deleteErrors.length > 0) {
+          alert(`Sebagian transaksi tidak dapat dihapus:\n${deleteErrors.slice(0, 3).join("\n")}`);
+          return anySuccess;
+        }
+        return true;
+      }
+
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        data = { message: `HTTP ${res.status}: ${res.statusText || "Gagal"}` };
+      }
+      alert(data.message || data.detail || `Gagal menghapus transaksi (Status ${res.status})`);
+      return false;
     } catch (err) {
-      alert("Terjadi kesalahan saat menghapus transaksi");
+      alert(`Terjadi kesalahan saat menghapus transaksi: ${err?.message || err}`);
       return false;
     }
   };
@@ -734,6 +816,17 @@ export default function DesktopPortal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids }),
       });
+      if (res.status === 404 || res.status === 405) {
+        const results = await Promise.all(
+          ids.map(id => fetch(`${API_BASE}/debts/${id}`, { method: "DELETE" }))
+        );
+        if (results.every(r => r.ok)) {
+          fetchDebts(selectedPosScope);
+          fetchNeracaPos(selectedPosScope);
+          fetchPosTransactions(selectedPosScope);
+          return true;
+        }
+      }
       const data = await res.json();
       if (res.ok) {
         fetchDebts(selectedPosScope);
@@ -875,6 +968,16 @@ export default function DesktopPortal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids }),
       });
+      if (res.status === 404 || res.status === 405) {
+        const results = await Promise.all(
+          ids.map(id => fetch(`${API_BASE}/materials/transactions/${id}`, { method: "DELETE" }))
+        );
+        if (results.every(r => r.ok)) {
+          fetchMaterials(selectedPosScope);
+          fetchNeracaPos(selectedPosScope);
+          return true;
+        }
+      }
       const data = await res.json();
       if (res.ok) {
         fetchMaterials(selectedPosScope);
@@ -1086,6 +1189,17 @@ export default function DesktopPortal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids }),
       });
+      if (res.status === 404 || res.status === 405) {
+        const results = await Promise.all(
+          ids.map(id => fetch(`${API_BASE}/categories/${id}`, { method: "DELETE" }))
+        );
+        if (results.every(r => r.ok)) {
+          setMasterMsg({ type: "success", text: "Pos program berhasil dihapus" });
+          fetchCategories();
+          fetchStats();
+          return true;
+        }
+      }
       const data = await res.json();
       if (res.ok) {
         setMasterMsg({ type: "success", text: data.message || "Pos program berhasil dihapus" });
@@ -1142,24 +1256,87 @@ export default function DesktopPortal({
   };
 
   const handleRecalculateAccounts = async () => {
-    setMasterMsg(null);
-    try {
-      const res = await fetch(`${API_BASE}/accounts/recalculate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setMasterMsg({ type: "success", text: data.message || "Saldo kas berhasil disinkronkan sesuai transaksi" });
-        fetchAccounts();
-        fetchStats();
-        fetchNeraca();
-      } else {
-        setMasterMsg({ type: "danger", text: data.detail || "Gagal menyinkronkan saldo kas" });
+    setConfirmDialog({
+      title: "Sinkronkan / Hitung Ulang Saldo Kas",
+      message: "Sistem akan menghitung ulang seluruh saldo akun kas dan bank agar cocok dengan riwayat jurnal transaksi yang ada. Jika jurnal transaksi telah dikosongkan/dihapus, saldo kas akan otomatis disesuaikan menjadi Rp 0.",
+      confirmText: "Sinkronkan Sekarang",
+      cancelText: "Batal",
+      confirmType: "primary",
+      details: [
+        { label: "Target Akun", value: "Seluruh Rekening Kas & Bank" },
+        { label: "Tujuan", value: "Sinkronisasi saldo dengan riwayat transaksi / kosongkan jika nol" }
+      ],
+      onConfirm: async () => {
+        setConfirmDialog(null);
+        setRecalculatingKas(true);
+        setMasterMsg(null);
+        setNeracaNotice(null);
+
+        let success = false;
+        let message = "";
+
+        try {
+          const res = await fetch(`${API_BASE}/accounts/recalculate`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+          });
+
+          if (res.ok) {
+            let data = {};
+            try { data = await res.json(); } catch (e) {}
+            message = data.message || "Saldo seluruh rekening kas berhasil disinkronkan sesuai transaksi.";
+            success = true;
+          } else if (res.status === 404 || res.status === 405) {
+            // Graceful fallback: hitung manual di sisi client jika backend belum update route /accounts/recalculate
+            const [accRes, txRes] = await Promise.all([
+              fetch(`${API_BASE}/accounts`),
+              fetch(`${API_BASE}/transactions?limit=2000`)
+            ]);
+            const accs = await accRes.json();
+            const txData = await txRes.json();
+            const txList = Array.isArray(txData) ? txData : (txData.transactions || []);
+
+            const accList = Array.isArray(accs) ? accs : [];
+            for (const acc of accList) {
+              const accTxs = txList.filter(t => String(t.account_id) === String(acc.id));
+              const inc = accTxs.filter(t => t.type === "income").reduce((s, t) => s + parseFloat(t.amount || 0), 0);
+              const exp = accTxs.filter(t => t.type === "expense").reduce((s, t) => s + parseFloat(t.amount || 0), 0);
+              const initial = parseFloat(acc.initial_balance || 0);
+              const calculatedBalance = initial + inc - exp;
+
+              await fetch(`${API_BASE}/accounts/${acc.id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  name: acc.name,
+                  initial_balance: initial,
+                  current_balance: calculatedBalance,
+                }),
+              });
+            }
+            message = "Saldo seluruh rekening kas berhasil disinkronkan sesuai transaksi yang ada.";
+            success = true;
+          } else {
+            let data = {};
+            try { data = await res.json(); } catch (e) {}
+            message = data.detail || data.message || `Gagal menyinkronkan saldo kas (Kode: ${res.status}).`;
+          }
+        } catch (err) {
+          console.error("Recalculate error:", err);
+          message = "Terjadi gangguan jaringan saat menyinkronkan saldo kas.";
+        } finally {
+          setRecalculatingKas(false);
+          const notice = { type: success ? "success" : "danger", text: message };
+          setMasterMsg(notice);
+          setNeracaNotice(notice);
+          if (success) {
+            fetchAccounts();
+            fetchStats();
+            fetchNeraca();
+          }
+        }
       }
-    } catch (err) {
-      setMasterMsg({ type: "danger", text: "Terjadi kesalahan saat menyinkronkan saldo kas" });
-    }
+    });
   };
 
   const handleDeleteRekening = (acc) => {
@@ -1200,6 +1377,17 @@ export default function DesktopPortal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids }),
       });
+      if (res.status === 404 || res.status === 405) {
+        const results = await Promise.all(
+          ids.map(id => fetch(`${API_BASE}/accounts/${id}`, { method: "DELETE" }))
+        );
+        if (results.every(r => r.ok)) {
+          setMasterMsg({ type: "success", text: "Rekening berhasil dihapus" });
+          fetchAccounts();
+          fetchStats();
+          return true;
+        }
+      }
       const data = await res.json();
       if (res.ok) {
         setMasterMsg({ type: "success", text: data.message || "Rekening berhasil dihapus" });
@@ -1301,6 +1489,16 @@ export default function DesktopPortal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids }),
       });
+      if (res.status === 404 || res.status === 405) {
+        const results = await Promise.all(
+          ids.map(id => fetch(`${API_BASE}/users/${id}`, { method: "DELETE" }))
+        );
+        if (results.every(r => r.ok)) {
+          setMasterMsg({ type: "success", text: "Pengguna berhasil dihapus" });
+          fetchUsers();
+          return true;
+        }
+      }
       const data = await res.json();
       if (res.ok) {
         setMasterMsg({ type: "success", text: data.message || "Pengguna berhasil dihapus" });
@@ -1384,6 +1582,16 @@ export default function DesktopPortal({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ids }),
       });
+      if (res.status === 404 || res.status === 405) {
+        const results = await Promise.all(
+          ids.map(id => fetch(`${API_BASE}/donors/${id}`, { method: "DELETE" }))
+        );
+        if (results.every(r => r.ok)) {
+          setMasterMsg({ type: "success", text: "Donatur berhasil dihapus" });
+          fetchDonors();
+          return true;
+        }
+      }
       const data = await res.json();
       if (res.ok) {
         setMasterMsg({ type: "success", text: data.message || "Donatur berhasil dihapus" });
@@ -1734,19 +1942,28 @@ export default function DesktopPortal({
 
           {/* 10. BUKU PEMBANTU PER POS */}
           {activeMenu === "buku_bantu" && (
-            <BukuPembantu bukuBantuData={bukuBantuData} fetchBukuBantu={fetchBukuBantu} />
+            <BukuPembantu bukuBantuData={bukuBantuData} fetchBukuBantu={fetchBukuBantu} categories={categories} />
           )}
 
           {/* 11. LAPORAN NERACA UMUM */}
           {activeMenu === "neraca" && (
-            <LaporanNeracaUmum
-              neracaData={neracaData}
-              fetchNeraca={fetchNeraca}
-              isReadOnly={isReadOnly}
-              setActiveMenu={setActiveMenu}
-              setConfirmDialog={setConfirmDialog}
-              handleRecalculateAccounts={handleRecalculateAccounts}
-            />
+            <ErrorBoundary onReset={fetchNeraca}>
+              <LaporanNeracaUmum
+                neracaData={neracaData}
+                fetchNeraca={fetchNeraca}
+                categories={categories}
+                accounts={accounts}
+                transactions={allTransactions}
+                debtsRecap={debtsRecap}
+                isReadOnly={isReadOnly}
+                setActiveMenu={setActiveMenu}
+                setConfirmDialog={setConfirmDialog}
+                handleRecalculateAccounts={handleRecalculateAccounts}
+                isRecalculating={recalculatingKas}
+                neracaNotice={neracaNotice}
+                setNeracaNotice={setNeracaNotice}
+              />
+            </ErrorBoundary>
           )}
 
           {/* 12. CETAK LAPORAN KEUANGAN */}
@@ -1805,6 +2022,7 @@ export default function DesktopPortal({
               handleDeleteRekening={handleDeleteRekening}
               handleBulkDeleteRekening={handleBulkDeleteRekening}
               handleRecalculateAccounts={handleRecalculateAccounts}
+              isRecalculating={recalculatingKas}
               setConfirmDialog={setConfirmDialog}
             />
           )}
